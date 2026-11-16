@@ -19,11 +19,21 @@ Nothing outside `src/` and `index.js` is touched: `gulpfile.js`, `.enyoconfig`,
 To see it work, serve the directory that holds **both** checkouts:
 
 ```bash
-cd /path/containing/enyo/and/onyx && python3 -m http.server 8000
+python3 test-onyx/serve.py 8000 /path/containing/enyo/and/onyx
 ```
 
 then <http://localhost:8000/onyx/test-onyx/index.html>. The page title reads
 `ALL PASS` or `FAIL (n)`.
+
+**Use `serve.py`, not `python3 -m http.server`, whenever you are verifying a
+change.** `http.server` sends no cache headers, so the browser caches ES
+modules — and a query string on the page URL does *not* bust them, because the
+module specifiers themselves are unchanged. A reload can therefore silently
+re-run the *old* code and report a pass for a change that is not on disk. That
+is not hypothetical: it happened during this work, and produced a green run
+against a file that had been reverted. `serve.py` sends `no-store` and refuses
+to answer conditional requests with a `304`. (A fresh port also works, since it
+is a new origin with an empty module registry, but that is easy to forget.)
 
 ## What the conversion covers
 
@@ -314,7 +324,7 @@ Static:
 - No `require(` or `module.exports` anywhere in `src/` or `index.js`.
 - Zero cycles (Tarjan plus an independent DFS back-edge check).
 
-In a browser (Chrome, served by `python3 -m http.server` from the directory
+In a browser (Chrome, served by `test-onyx/serve.py` from the directory
 holding both checkouts; console clean — no errors, no warnings, every request
 200, images included):
 
@@ -334,6 +344,30 @@ holding both checkouts; console clean — no errors, no warnings, every request
   its `background-image` is the `gradient.png` from `images/`.
 - `test-onyx/all-modules.html` — 37/37 modules import and evaluate cleanly on
   their own, 7 listed as blocked.
+
+Both were re-run on `serve.py` after the caching problem above came to light,
+so the numbers are from genuinely fresh loads.
+
+### The checks were shown to fail
+
+A test that has never gone red has not been shown to test anything, so each of
+these was broken on purpose and the harness confirmed to catch it:
+
+| Break | Result |
+| --- | --- |
+| Strip `import '../index.js'` from all 44 modules | `FAIL (2)` — body class, and the `.onyx` font rules |
+| Make `Button` and `Icon` import each other | `FAIL (11)` in all-modules — `ReferenceError: Cannot access 'Button' before initialization` |
+| Revert the enyo `Scrim` fix | `FAIL (2)` — Menu `onSelect` never arrives |
+| Empty `css/onyx.css` | `FAIL (3)` — font-size, background image, font family |
+
+The first of those **found a real hole**. The page originally did
+`import {version} from 'onyx/index.js'` at the top, which ran
+`dom.addBodyClass('onyx')` itself — so the body-class check passed even with
+every `import '../index.js'` stripped from `src/`. It could not fail. The page
+now imports `index.js` only via `await import()` at the very end, after that
+check has been made, so the class can only be present because a *widget* module
+pulled it in. That was the single most important thing to get right in this
+conversion, and until this it was untested.
 
 The widgets were also looked at, not just asserted: the dark toolbar, the
 gradient buttons with the green `onyx-affirmative` and red `onyx-negative`
