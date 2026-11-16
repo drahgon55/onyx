@@ -1,13 +1,12 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/InputDecorator~InputDecorator} kind.
 * @module onyx/InputDecorator
 */
 
-var
-	kind = require('enyo/kind'),
-	ToolDecorator = require('enyo/ToolDecorator');
+import kind from 'enyo/src/kind.js';
+import ToolDecorator from 'enyo/src/ToolDecorator/ToolDecorator.js';
 
 /**
 * {@link module:onyx/InputDecorator~InputDecorator} is a control that provides input styling. Any
@@ -15,10 +14,9 @@ var
 * input. Usually, an InputDecorator surrounds an {@link module:onyx/Input~Input}.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Input = require('onyx/Input'),
-* 		InputDecorator = require('onyx/InputDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Input from 'onyx/src/Input/Input.js';
+* 	import InputDecorator from 'onyx/src/InputDecorator.js';
 *
 * 	{kind: InputDecorator, components: [
 * 		{kind: Input}
@@ -29,11 +27,10 @@ var
 * input control, e.g.:
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		IconButton = require('onyx/IconButton'),
-* 		Input = require('onyx/Input'),
-* 		InputDecorator = require('onyx/InputDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import IconButton from 'onyx/src/IconButton.js';
+* 	import Input from 'onyx/src/Input/Input.js';
+* 	import InputDecorator from 'onyx/src/InputDecorator.js';
 *
 * 	{kind: InputDecorator, components: [
 * 		{kind: IconButton, src: '@../assets/search.png'},
@@ -46,10 +43,9 @@ var
 * decorator is sized, then its contents will likely need to be sized as well.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Input = require('onyx/Input'),
-* 		InputDecorator = require('onyx/InputDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Input from 'onyx/src/Input/Input.js';
+* 	import InputDecorator from 'onyx/src/InputDecorator.js';
 *
 * 	{kind: InputDecorator, style: 'width: 500px;', components: [
 * 		{kind: Input, style: 'width: 100%;'}
@@ -61,7 +57,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/InputDecorator~InputDecorator.prototype */ {
 
 	/**

@@ -1,14 +1,13 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Checkbox~Checkbox} kind.
 * @module onyx/Checkbox
 */
 
-var
-	kind = require('enyo/kind'),
-	utils = require('enyo/utils'),
-	Checkbox = require('enyo/Checkbox');
+import kind from 'enyo/src/kind.js';
+import utils from 'enyo/src/utils.js';
+import Checkbox from 'enyo/src/Checkbox/Checkbox.js';
 
 /**
 * {@link module:onyx/Checkbox~Checkbox} is a box that shows or hides a checkmark when clicked. The
@@ -17,9 +16,8 @@ var
 * checked.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Checkbox = require('onyx/Checkbox');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Checkbox from 'onyx/src/Checkbox/Checkbox.js';
 *
 * 	{kind: Checkbox, onchange: 'checkboxClicked'},
 *
@@ -35,7 +33,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Checkbox~Checkbox.prototype */ {
 
 	/**

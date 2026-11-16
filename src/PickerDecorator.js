@@ -1,16 +1,14 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/PickerDecorator~PickerDecorator} kind.
 * @module onyx/PickerDecorator
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	MenuDecorator = require('onyx/MenuDecorator'),
-	PickerButton = require('onyx/PickerButton');
+import MenuDecorator from './MenuDecorator.js';
+import PickerButton from './PickerButton.js';
 
 /**
 * {@link module:onyx/PickerDecorator~PickerDecorator} is a control that loosely couples an
@@ -20,10 +18,9 @@ var
 * position relative to the activator.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Picker = require('onyx/Picker'),
-* 		PickerDecorator = require('onyx/PickerDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Picker from 'onyx/src/Picker/Picker.js';
+* 	import PickerDecorator from 'onyx/src/PickerDecorator.js';
 *
 * 	{kind: PickerDecorator, components: [
 * 		{}, // this uses the defaultKind property of PickerDecorator to inherit from PickerButton
@@ -41,7 +38,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/PickerDecorator~PickerDecorator.prototype */ {
 
 	/**

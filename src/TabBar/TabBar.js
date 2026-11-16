@@ -1,4 +1,4 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/TabBar~TabBar} kind.
@@ -6,22 +6,19 @@ require('onyx');
 * @module onyx/TabBar
 */
 
-var
-	kind = require('enyo/kind'),
-	utils = require('enyo/utils'),
-	Scroller = require('enyo/Scroller');
+import kind from 'enyo/src/kind.js';
+import utils from 'enyo/src/utils.js';
+import Scroller from 'enyo/src/Scroller/Scroller.js';
 
-var
-	FittableColumns = require('layout/FittableColumns');
+import FittableColumns from 'layout/FittableColumns';
 
-var
-	IconButton = require('onyx/IconButton'),
-	Menu = require('onyx/Menu'),
-	MenuDecorator = require('onyx/MenuDecorator'),
-	RadioGroup = require('onyx/RadioGroup'),
-	TabBarItem = require('onyx/TabBarItem'),
-	Tooltip = require('onyx/Tooltip'),
-	TooltipDecorator = require('onyx/TooltipDecorator');
+import IconButton from '../IconButton.js';
+import Menu from '../Menu/Menu.js';
+import MenuDecorator from '../MenuDecorator.js';
+import RadioGroup from '../RadioGroup/RadioGroup.js';
+import TabBarItem from '../TabBarItem/TabBarItem.js';
+import Tooltip from '../Tooltip/Tooltip.js';
+import TooltipDecorator from '../TooltipDecorator.js';
 
 /**
 * {@link module:onyx/TabBar~TabBar} is a scrolled set of radio buttons that is used by
@@ -33,9 +30,8 @@ var
 * Here's an example:
 *
 * ```javascript
-* var
-* 	kind = require('enyo/kind'),
-* 	TabBar = require('onyx/TabBar');
+* import kind from 'enyo/src/kind.js';
+* import TabBar from 'onyx/src/TabBar/TabBar.js';
 *
 * var myStuff = kind({
 * 	name: 'myStuff'
@@ -106,7 +102,7 @@ var
 * @ui
 * @private
 */
-module.exports = kind (
+export default kind (
 	/** @lends module:onyx/TabBar~TabBar.prototype */ {
 
 	/**

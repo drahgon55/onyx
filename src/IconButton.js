@@ -1,15 +1,13 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/IconButton~IconButton} kind.
 * @module onyx/IconButton
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Icon = require('onyx/Icon');
+import Icon from './Icon/Icon.js';
 
 /**
 * {@link module:onyx/IconButton~IconButton} is an {@link module:onyx/Icon~Icon} that acts like a button. The
@@ -32,7 +30,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/IconButton~IconButton.prototype */ {
 
 	/**

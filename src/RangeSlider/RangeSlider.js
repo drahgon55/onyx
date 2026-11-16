@@ -1,16 +1,14 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/RangeSlider~RangeSlider} and {@link module:onyx/RangeSlider~RangeSliderKnobLabel} kinds.
 * @module onyx/RangeSlider
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
-var
-	ProgressBar = require('onyx/ProgressBar');
+import ProgressBar from '../ProgressBar/ProgressBar.js';
 
 /**
 * {@link module:onyx/RangeSlider~RangeSliderKnobLabel} provides the labels for the knobs
@@ -91,8 +89,7 @@ var RangeSliderKnobLabel = kind(
 * values.
 *
 * ```
-* var
-* 	RangeSlider = require('onyx/RangeSlider');
+* import RangeSlider from 'onyx/src/RangeSlider/RangeSlider.js';
 *
 * {kind: RangeSlider, rangeMin: 100, rangeMax: 500,
 * 	rangeStart: 200, rangeEnd: 400, interval: 20}
@@ -108,7 +105,7 @@ var RangeSliderKnobLabel = kind(
 * @ui
 * @public
 */
-module.exports = kind(
+var RangeSlider = kind(
 	/** @lends module:onyx/RangeSlider~RangeSlider.prototype */ {
 
 	/**
@@ -527,4 +524,7 @@ module.exports = kind(
 /**
 * The declaration for the {@link module:onyx/RangeSlider~RangeSliderKnobLabel} kind
 */
-module.exports.KnobLabel = RangeSliderKnobLabel;
+RangeSlider.KnobLabel = RangeSliderKnobLabel;
+
+export default RangeSlider;
+export { RangeSliderKnobLabel as KnobLabel };

@@ -1,14 +1,13 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Icon~Icon} kind.
 * @module onyx/Icon
 */
 
-var
-	kind = require('enyo/kind'),
-	path = require('enyo/path'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import path from 'enyo/src/path.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * {@link module:onyx/Icon~Icon} is a control that displays an icon. To set the icon image,
@@ -20,9 +19,8 @@ var
 * of a different size is used.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Icon = require('onyx/Icon');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Icon from 'onyx/src/Icon/Icon.js';
 *
 * 	{kind: Icon, src: '@../assets/search.png'}
 * ```
@@ -34,7 +32,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Icon~Icon.prototype */ {
 
 	/**

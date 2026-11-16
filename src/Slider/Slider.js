@@ -1,16 +1,14 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Slider~Slider} kind.
 * @module onyx/Slider
 */
 
-var
-	kind = require('enyo/kind'),
-	Animator = require('enyo/Animator');
+import kind from 'enyo/src/kind.js';
+import Animator from 'enyo/src/Animator.js';
 
-var
-	ProgressBar = require('onyx/ProgressBar');
+import ProgressBar from '../ProgressBar/ProgressBar.js';
 
 /**
 * Fires when bar position is set.
@@ -46,8 +44,7 @@ var
 * tapped and dragged to the desired location.
 *
 * ```
-* var
-* 	Slider = require('onyx.Slider');
+* import Slider from 'onyx/src/Slider/Slider.js';
 *
 * {kind: Slider, value: 30}
 * ```
@@ -62,7 +59,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Slider~Slider.prototype */ {
 
 	/**

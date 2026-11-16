@@ -1,20 +1,17 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/FlyweightPicker~FlyweightPicker} kind.
 * @module onyx/FlyweightPicker
 */
 
-var
-	kind = require('enyo/kind'),
-	Scroller = require('enyo/Scroller'),
-	TouchScrollStrategy = require('enyo/TouchScrollStrategy');
+import kind from 'enyo/src/kind.js';
+import Scroller from 'enyo/src/Scroller/Scroller.js';
+import TouchScrollStrategy from 'enyo/src/TouchScrollStrategy.js';
 
-var
-	FlyweightRepeater = require('layout/FlyweightRepeater');
+import FlyweightRepeater from 'layout/FlyweightRepeater';
 
-var
-	Picker = require('onyx/Picker');
+import Picker from './Picker/Picker.js';
 
 /**
 * Fires when a row is being initialized.
@@ -54,14 +51,12 @@ var
 * application to determine which item was selected.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind');
+* 	import kind from 'enyo/src/kind.js';
 *
-* 	var
-* 		FlyweightPicker = require('onyx/FlyweightPicker'),
-* 		PickerDecorator = require('onyx/PickerDecorator');
+* 	import FlyweightPicker from 'onyx/src/FlyweightPicker.js';
+* 	import PickerDecorator from 'onyx/src/PickerDecorator.js';
 *
-* 	module.exports = kind(
+* 	export default kind(
 * 		name: 'onyx.FlyweightPickerExample',
 * 		handlers: {
 * 			onSelect: 'itemSelected'
@@ -96,7 +91,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/FlyweightPicker~FlyweightPicker.prototype */ {
 
 	/**

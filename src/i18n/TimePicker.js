@@ -1,21 +1,18 @@
-require('onyx');
-require('enyo-ilib');
+import '../../index.js';
+import 'enyo-ilib';
 
 /**
 * Contains the declaration for the {@link module:onyx/i18n/TimePicker~TimePicker} kind.
 * @module onyx/i18n/TimePicker
 */
 
-var
-	kind = require('enyo/kind'),
-	Signals = require('enyo/Signals');
+import kind from 'enyo/src/kind.js';
+import Signals from 'enyo/src/Signals.js';
 
-var
-	dateFactory = require('enyo-ilib/DateFactory'),
-	DateFmt = require('enyo-ilib/DateFmt');
+import dateFactory from 'enyo-ilib/DateFactory';
+import DateFmt from 'enyo-ilib/DateFmt';
 
-var
-	TimePicker = require('onyx/TimePicker');
+import TimePicker from '../TimePicker/TimePicker.js';
 
 /**
 * {@link module:onyx/i18n/TimePicker~TimePicker} is a locale-aware version of
@@ -27,7 +24,7 @@ var
 * @extends module:enyo/TimePicker~TimePicker
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/i18n/TimePicker~TimePicker.prototype */ {
 
 	/**

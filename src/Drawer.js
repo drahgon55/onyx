@@ -1,13 +1,12 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Drawer~Drawer} kind.
 * @module onyx/Drawer
 */
 
-var
-	kind = require('enyo/kind'),
-	Drawer = require('enyo/Drawer');
+import kind from 'enyo/src/kind.js';
+import Drawer from 'enyo/src/Drawer.js';
 
 /**
 * {@link module:onyx/Drawer~Drawer} is now an empty kind derived from {@link module:enyo/Drawer~Drawer}.
@@ -22,7 +21,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Drawer~Drawer.prototype */ {
 
 	/**

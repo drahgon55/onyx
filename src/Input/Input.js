@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Input~Input} kind.
 * @module onyx/Input
 */
 
-var
-	kind = require('enyo/kind'),
-	Input = require('enyo/Input');
+import kind from 'enyo/src/kind.js';
+import Input from 'enyo/src/Input/Input.js';
 
 /**
 * {@link module:onyx/Input~Input} is an Onyx-styled input control, derived from {@link module:enyo/Input~Input}.
@@ -15,10 +14,9 @@ var
 * provides styling, e.g.:
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Input = require('onyx/Input'),
-* 		InputDecorator = require('onyx/InputDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Input from 'onyx/src/Input/Input.js';
+* 	import InputDecorator from 'onyx/src/InputDecorator.js';
 *
 * 	{kind: InputDecorator, components: [
 * 		{kind: Input, placeholder: 'Enter some text...', onchange: 'inputChange'}
@@ -34,7 +32,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Input~Input.prototype */ {
 
 	/**

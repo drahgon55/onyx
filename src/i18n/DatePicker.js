@@ -1,20 +1,17 @@
-﻿require('onyx');
-require('enyo-ilib');
+﻿import '../../index.js';
+import 'enyo-ilib';
 
 /**
 * Contains the declaration for the {@link module:onyx/i18n/DatePicker~DatePicker} kind.
 * @module onyx/i18n/DatePicker
 */
 
-var
-	kind = require('enyo/kind'),
-	Signals = require('enyo/Signals');
+import kind from 'enyo/src/kind.js';
+import Signals from 'enyo/src/Signals.js';
 
-var
-	DateFmt = require('enyo-ilib/DateFmt');
+import DateFmt from 'enyo-ilib/DateFmt';
 
-var
-	DatePicker = require('onyx/DatePicker');
+import DatePicker from '../DatePicker/DatePicker.js';
 
 /**
 * {@link module:onyx/i18n/DatePicker~DatePicker} is a {@link module:onyx/DatePicker~DatePicker}
@@ -29,7 +26,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/i18n/DatePicker~DatePicker.prototype */ {
 
 	/**

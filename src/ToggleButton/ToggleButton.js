@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/ToggleButton~ToggleButton} kind.
 * @module onyx/ToggleButton
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * Fires when the user changes the value of the toggle button, but not
@@ -29,7 +28,7 @@ var
 * @extends module:enyo/Control~Control
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/ToggleButton~ToggleButton.prototype */ {
 
 	/**

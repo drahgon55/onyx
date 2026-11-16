@@ -1,16 +1,14 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/TooltipDecorator~TooltipDecorator} kind.
 * @module onyx/TooltipDecorator
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
-var
-	Button = require('onyx/Button');
+import Button from './Button/Button.js';
 
 /**
 * {@link module:onyx/TooltipDecorator~TooltipDecorator} is a control that couples an {@link module:onyx/Tooltip~Tooltip}
@@ -18,10 +16,9 @@ var
 * activator generates an `onenter` event:
 *
 * ```
-* var
-* 	Button = require('onyx/Button'),
-* 	Tooltip = require('onyx/Tooltip'),
-* 	TooltipDecorator = require('onyx/TooltipDecorator');
+* import Button from 'onyx/src/Button/Button.js';
+* import Tooltip from 'onyx/src/Tooltip/Tooltip.js';
+* import TooltipDecorator from 'onyx/src/TooltipDecorator.js';
 *
 * {kind: TooltipDecorator, components: [
 * 	{kind: Button, content: 'Tooltip'},
@@ -33,11 +30,10 @@ var
 * {@link module:onyx/InputDecorator~InputDecorator} around the input:
 *
 * ```
-* var
-* 	Input = require('onyx/Input'),
-* 	InputDecorator = require('onyx/InputDecorator'),
-* 	Tooltip = require('onyx/Tooltip'),
-* 	TooltipDecorator = require('onyx/TooltipDecorator');
+* import Input from 'onyx/src/Input/Input.js';
+* import InputDecorator from 'onyx/src/InputDecorator.js';
+* import Tooltip from 'onyx/src/Tooltip/Tooltip.js';
+* import TooltipDecorator from 'onyx/src/TooltipDecorator.js';
 *
 * {kind: TooltipDecorator, components: [
 * 	{kind: InputDecorator, components: [
@@ -52,7 +48,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/TooltipDecorator~TooltipDecorator.prototype */ {
 
 	/**

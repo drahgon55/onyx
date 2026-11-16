@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Grabber~Grabber} kind.
 * @module onyx/Grabber
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * {@link module:onyx/Grabber~Grabber} is a control styled to indicate that an object may be grabbed
@@ -15,11 +14,10 @@ var
 * dragging an object will result in movement.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Button = require('onyx/Button'),
-* 		Grabber = require('onyx/Grabber'),
-* 		Toolbar = require('onyx/Toolbar');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Button from 'onyx/src/Button/Button.js';
+* 	import Grabber from 'onyx/src/Grabber/Grabber.js';
+* 	import Toolbar from 'onyx/src/Toolbar/Toolbar.js';
 *
 * 	{kind: Toolbar, components: [
 * 		{kind: Grabber, ondragstart: 'grabberDragstart',
@@ -37,7 +35,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Grabber~Grabber.prototype */ {
 
 	/**

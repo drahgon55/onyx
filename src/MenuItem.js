@@ -1,13 +1,12 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/MenuItem~MenuItem} kind.
 * @module onyx/MenuItem
 */
 
-var
-	kind = require('enyo/kind'),
-	Button = require('enyo/Button');
+import kind from 'enyo/src/kind.js';
+import Button from 'enyo/src/Button/Button.js';
 
 /**
 * Fires when the menu item is selected.
@@ -39,14 +38,12 @@ var
 * handled by a client application to determine which MenuItem was selected.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind');
+* 	import kind from 'enyo/src/kind.js';
 *
-* 	var
-* 		Menu = require('onyx/Menu'),
-* 		MenuDecorator = require('onyx/MenuDecorator');
+* 	import Menu from 'onyx/src/Menu/Menu.js';
+* 	import MenuDecorator from 'onyx/src/MenuDecorator.js';
 *
-* 	module.exports = kind(
+* 	export default kind(
 * 		name: 'onyx.MenuItemExample',
 * 		handlers: {
 * 			onSelect: 'itemSelected'
@@ -74,7 +71,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/MenuItem~MenuItem.prototype */ {
 
 	/**

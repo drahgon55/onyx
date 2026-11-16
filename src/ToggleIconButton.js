@@ -1,15 +1,13 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/ToggleIconButton~ToggleIconButton} kind.
 * @module onyx/ToggleIconButton
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Icon = require('onyx/Icon');
+import Icon from './Icon/Icon.js';
 
 /**
 * Fires when the user changes the value of the toggle button, but not
@@ -26,8 +24,7 @@ var
 * image is specified by setting the [src]{@link module:onyx/Icon~Icon#src} property to a URL.
 *
 * ```
-* var
-* 	ToggleIconButton = require('onyx/ToggleIconButton');
+* import ToggleIconButton from 'onyx/src/ToggleIconButton.js';
 *
 * {kind: ToggleIconButton, src: '@../assets/search.png', ontap: 'buttonTap'}
 * ```
@@ -41,7 +38,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/ToggleIconButton~ToggleIconButton.prototype */ {
 
 	/**

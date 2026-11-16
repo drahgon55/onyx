@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/RadioButton~RadioButton} kind.
 * @module onyx/RadioButton
 */
 
-var
-	kind = require('enyo/kind'),
-	Button = require('enyo/Button');
+import kind from 'enyo/src/kind.js';
+import Button from 'enyo/src/Button/Button.js';
 
 /**
 * {@link module:onyx/RadioButton~RadioButton} is a radio button designed for use within an
@@ -18,7 +17,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/RadioButton~RadioButton.prototype */ {
 
 	/**

@@ -1,15 +1,13 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/PickerButton~PickerButton} kind.
 * @module onyx/PickerButton
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Button = require('onyx/Button');
+import Button from './Button/Button.js';
 
 /**
 * {@link module:onyx/PickerButton~PickerButton} is a button that, when tapped, shows an
@@ -21,7 +19,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/PickerButton~PickerButton.prototype */ {
 
 	/**

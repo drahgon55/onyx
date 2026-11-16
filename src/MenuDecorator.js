@@ -1,16 +1,14 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/MenuDecorator~MenuDecorator} kind.
 * @module onyx/MenuDecorator
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Button = require('onyx/Button'),
-	TooltipDecorator = require('onyx/TooltipDecorator');
+import Button from './Button/Button.js';
+import TooltipDecorator from './TooltipDecorator.js';
 
 /**
 * {@link module:onyx/MenuDecorator~MenuDecorator} is a control that loosely couples an {@link module:onyx/Menu~Menu}
@@ -20,10 +18,9 @@ var
 * activated, it shows itself in the correct position relative to the activator.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Menu = require('onyx/Menu'),
-* 		MenuDecorator = require('onyx/MenuDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Menu from 'onyx/src/Menu/Menu.js';
+* 	import MenuDecorator from 'onyx/src/MenuDecorator.js';
 *
 * 	{kind: MenuDecorator, components: [
 * 		{content: 'Show menu'},
@@ -42,7 +39,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/MenuDecorator~MenuDecorator.prototype */ {
 
 	/**

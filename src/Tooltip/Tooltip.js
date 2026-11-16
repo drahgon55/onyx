@@ -1,15 +1,13 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Tooltip~Tooltip} kind.
 * @module onyx/Tooltip
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Popup = require('onyx/Popup');
+import Popup from '../Popup/Popup.js';
 
 /**
 * {@link module:onyx/Tooltip~Tooltip} is a subkind of {@link module:onyx/Popup~Popup} that works in
@@ -18,10 +16,9 @@ var
 * around the decorator where there is available window space.
 *
 * ```
-* var
-* 	Button = require('onyx/Button'),
-* 	Tooltip = require('onyx/Tooltip'),
-* 	TooltipDecorator = require('onyx/TooltipDecorator');
+* import Button from 'onyx/src/Button/Button.js';
+* import Tooltip from 'onyx/src/Tooltip/Tooltip.js';
+* import TooltipDecorator from 'onyx/src/TooltipDecorator.js';
 *
 *	{kind: TooltipDecorator, components: [
 *		{kind: Button, content: 'Tooltip'},
@@ -36,7 +33,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Tooltip~Tooltip.prototype */ {
 
 	/**

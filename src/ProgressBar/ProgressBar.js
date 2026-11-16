@@ -1,14 +1,13 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/ProgressBar~ProgressBar} kind.
 * @module onyx/ProgressBar
 */
 
-var
-	kind = require('enyo/kind'),
-	Animator = require('enyo/Animator'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Animator from 'enyo/src/Animator.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * Fires when progress bar finishes animating to a position.
@@ -24,9 +23,8 @@ var
 * process in a horizontal bar.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		ProgressBar = require('onyx/ProgressBar');
+* 	import kind from 'enyo/src/kind.js';
+* 	import ProgressBar from 'onyx/src/ProgressBar/ProgressBar.js';
 *
 * 	{kind: ProgressBar, progress: 10}
 * ```
@@ -42,9 +40,8 @@ var
 * [barClasses]{@link module:onyx/ProgressBar~ProgressBar#barClasses} property, e.g.:
 *
 * ```
-* 	var
-* 		kind = require('enyo/kind'),
-* 		ProgressBar = require('onyx/ProgressBar');
+* 	import kind from 'enyo/src/kind.js';
+* 	import ProgressBar from 'onyx/src/ProgressBar/ProgressBar.js';
 *
 * 	{kind: ProgressBar, barClasses: 'onyx-dark'}
 * ```
@@ -54,7 +51,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/ProgressBar~ProgressBar.prototype */ {
 
 	/**

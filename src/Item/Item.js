@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Item~Item} kind.
 * @module onyx/Item
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * {@link module:onyx/Item~Item} is a control designed to display a group of stacked items,
@@ -16,9 +15,8 @@ var
 * highlighting.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Item = require('onyx/Item');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Item from 'onyx/src/Item/Item.js';
 *
 * 	{kind: Item, tapHighlight: false}
 * ```
@@ -28,7 +26,7 @@ var
 * @ui
 * @public
 */
-var Item = module.exports = kind(
+var Item = kind(
 	/** @lends module:onyx/Item~Item.prototype */ {
 
 	/**
@@ -127,3 +125,5 @@ var Item = module.exports = kind(
 		}
 	}
 });
+
+export default Item;

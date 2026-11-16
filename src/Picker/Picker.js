@@ -1,15 +1,13 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Picker~Picker} kind.
 * @module onyx/Picker
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Menu = require('onyx/Menu');
+import Menu from '../Menu/Menu.js';
 
 /**
 * Fires when the currently selected item changes.
@@ -33,10 +31,9 @@ var
 * `true` for the item that should be selected.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Picker = require('onyx/Picker'),
-* 		PickerDecorator = require('onyx/PickerDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Picker from 'onyx/src/Picker/Picker.js';
+* 	import PickerDecorator from 'onyx/src/PickerDecorator.js';
 *
 * 	{kind: PickerDecorator, components: [
 * 		{}, //this uses the defaultKind property of PickerDecorator to inherit from PickerButton
@@ -58,7 +55,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Picker~Picker.prototype */ {
 
 	/**

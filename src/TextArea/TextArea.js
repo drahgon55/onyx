@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/TextArea~TextArea} kind.
 * @module onyx/TextArea
 */
 
-var
-	kind = require('enyo/kind'),
-	TextArea = require('enyo/TextArea');
+import kind from 'enyo/src/kind.js';
+import TextArea from 'enyo/src/TextArea/TextArea.js';
 
 /**
 * {@link module:onyx/TextArea~TextArea} is an Onyx-styled TextArea control, derived from
@@ -15,9 +14,8 @@ var
 * {@link module:onyx/InputDecorator~InputDecorator}, which provides styling, e.g.:
 *
 * ```
-* var
-* 	InputDecorator = require('onyx/InputDecorator'),
-* 	TextArea = require('onyx/TextArea');
+* import InputDecorator from 'onyx/src/InputDecorator.js';
+* import TextArea from 'onyx/src/TextArea/TextArea.js';
 *
 * {kind: InputDecorator, components: [
 * 	{kind: TextArea, onchange: 'inputChange'}
@@ -33,7 +31,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/TextArea~TextArea.prototype */ {
 
 	/**

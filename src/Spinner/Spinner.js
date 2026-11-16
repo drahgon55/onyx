@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Spinner~Spinner} kind.
 * @module onyx/Spinner
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * {@link module:onyx/Spinner~Spinner} is a control that displays a spinning animation to indicate
@@ -16,8 +15,7 @@ var
 * (suitable for use on a lighter background), apply the `'onyx-light'` CSS class:
 *
 * ```
-* var
-* 	Spinner = require('onyx/Spinner');
+* import Spinner from 'onyx/src/Spinner/Spinner.js';
 *
 * {kind: Spinner, classes: 'onyx-light'}
 * ```
@@ -33,7 +31,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Spinner~Spinner.prototype */ {
 
 	/**

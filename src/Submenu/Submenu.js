@@ -1,17 +1,15 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Submenu~Submenu} kind.
 * @module onyx/Submenu
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
-var
-	Drawer = require('onyx/Drawer'),
-	MenuItem = require('onyx/MenuItem');
+import Drawer from '../Drawer.js';
+import MenuItem from '../MenuItem.js';
 
 /**
 * {@link module:onyx/Submenu~Submenu} is a control that collapses several menu items into a drawer,
@@ -19,10 +17,9 @@ var
 * inside an {@link module:onyx/Menu~Menu}.
 *
 * ```
-* var
-* 	Menu = require('onyx/Menu'),
-* 	MenuDecorator = require('onyx/MenuDecorator'),
-* 	Submenu = require('onyx/Submenu');
+* import Menu from 'onyx/src/Menu/Menu.js';
+* import MenuDecorator from 'onyx/src/MenuDecorator.js';
+* import Submenu from 'onyx/src/Submenu/Submenu.js';
 *
 * {kind: MenuDecorator, components:[
 * 	{content: 'Open menu'},
@@ -43,7 +40,7 @@ var
 * @extends module:enyo/Control~Control
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Submenu~Submenu.prototype */ {
 
 	/**

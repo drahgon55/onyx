@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Button~Button} kind.
 * @module onyx/Button
 */
 
-var
-	kind = require('enyo/kind'),
-	Button = require('enyo/Button');
+import kind from 'enyo/src/kind.js';
+import Button from 'enyo/src/Button/Button.js';
 
 /**
 * {@link module:onyx/Button~Button} is an {@link module:enyo/Button~Button} with Onyx styling applied. The
@@ -17,9 +16,8 @@ var
 * some built-in presets.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Button = require('onyx/Button');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Button from 'onyx/src/Button/Button.js';
 *
 * 	{kind: Button, content: 'Button'},
 * 	{kind: Button, content: 'Affirmative', classes: 'onyx-affirmative'},
@@ -36,7 +34,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Button~Button.prototype */ {
 
 	/**

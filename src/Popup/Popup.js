@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Popup~Popup} kind.
 * @module onyx/Popup
 */
 
-var
-	kind = require('enyo/kind'),
-	Popup = require('enyo/Popup');
+import kind from 'enyo/src/kind.js';
+import Popup from 'enyo/src/Popup/Popup.js';
 
 /**
 * {@link module:onyx/Popup~Popup} is an {@link module:enyo/Popup~Popup} with Onyx styling applied.
@@ -21,7 +20,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Popup~Popup.prototype */ {
 
 	/**

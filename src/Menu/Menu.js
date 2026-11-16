@@ -1,18 +1,16 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Menu~Menu} kind.
 * @module onyx/Menu
 */
 
-var
-	kind = require('enyo/kind'),
-	Scroller = require('enyo/Scroller'),
-	TouchScrollStrategy = require('enyo/TouchScrollStrategy');
+import kind from 'enyo/src/kind.js';
+import Scroller from 'enyo/src/Scroller/Scroller.js';
+import TouchScrollStrategy from 'enyo/src/TouchScrollStrategy.js';
 
-var
-	MenuItem = require('onyx/MenuItem'),
-	Popup = require('onyx/Popup');
+import MenuItem from '../MenuItem.js';
+import Popup from '../Popup/Popup.js';
 
 /**
 * Requests that a menu be displayed and positioned near an activating control.
@@ -41,10 +39,9 @@ var
 * to the activator.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Menu = require('onyx/Menu'),
-* 		MenuDecorator = require('onyx/MenuDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Menu from 'onyx/src/Menu/Menu.js';
+* 	import MenuDecorator from 'onyx/src/MenuDecorator.js';
 *
 * 	{kind: MenuDecorator, components: [
 * 		{content: 'Show menu'},
@@ -63,7 +60,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Menu~Menu.prototype */ {
 
 	/**

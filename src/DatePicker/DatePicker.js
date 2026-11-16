@@ -1,18 +1,16 @@
-﻿require('onyx');
+﻿import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/DatePicker~DatePicker} kind.
 * @module onyx/DatePicker
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
-var
-	FlyweightPicker = require('onyx/FlyweightPicker'),
-	Picker = require('onyx/Picker'),
-	PickerDecorator = require('onyx/PickerDecorator');
+import FlyweightPicker from '../FlyweightPicker.js';
+import Picker from '../Picker/Picker.js';
+import PickerDecorator from '../PickerDecorator.js';
 
 /**
 * Fires when one of the [DatePicker]{@link module:onyx/DatePicker~DatePicker}'s fields is selected.
@@ -40,7 +38,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/DatePicker~DatePicker.prototype */ {
 
 	/**

@@ -1,13 +1,12 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/RichText~RichText} kind.
 * @module onyx/RichText
 */
 
-var
-	kind = require('enyo/kind'),
-	RichText = require('enyo/RichText');
+import kind from 'enyo/src/kind.js';
+import RichText from 'enyo/src/RichText/RichText.js';
 
 /**
 * {@link module:onyx/RichText~RichText} is an Onyx-styled rich text control, derived from
@@ -15,9 +14,8 @@ var
 * {@link module:onyx/InputDecorator~InputDecorator}, which provides styling, e.g.:
 *
 * ```
-* var
-* 	InputDecorator = require('onyx/InputDecorator'),
-* 	RichText = require('onyx/RichText');
+* import InputDecorator from 'onyx/src/InputDecorator.js';
+* import RichText from 'onyx/src/RichText/RichText.js';
 *
 * {kind: InputDecorator, components: [
 * 	{kind: RichText, style: 'width: 100px;', onchange: 'inputChange'}
@@ -33,7 +31,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/RichText~RichText.prototype */ {
 
 	/**

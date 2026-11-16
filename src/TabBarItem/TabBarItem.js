@@ -1,4 +1,4 @@
-﻿require('onyx');
+﻿import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/TabBarItem~TabBarItem} kind.
@@ -6,10 +6,9 @@
 * @module onyx/TabBarItem
 */
 
-var
-	kind = require('enyo/kind'),
-	Button = require('enyo/Button'),
-	GroupItem = require('enyo/GroupItem');
+import kind from 'enyo/src/kind.js';
+import Button from 'enyo/src/Button/Button.js';
+import GroupItem from 'enyo/src/GroupItem.js';
 
 /**
 * onyx.TabBarItem is a special button for {@link module:onyx/TabBar~TabBar}. This widget is
@@ -21,7 +20,7 @@ var
 * @ui
 * @private
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/TabBar~TabBar.Item */ {
 
 	/**

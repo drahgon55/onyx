@@ -1,12 +1,11 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/Groupbox~Groupbox} kind.
 * @module onyx/Groupbox
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
 /**
 * {@link module:onyx/Groupbox~Groupbox} displays rows of controls as a vertically-stacked group.
@@ -17,13 +16,12 @@ var
 * in the Groupbox, e.g.:
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Groupbox = require('onyx/Groupbox'),
-* 		GroupboxHeader = require('onyx/GroupboxHeader'),
-* 		Input = require('onyx/Input'),
-* 		InputDecorator = require('onyx/InputDecorator'),
-* 		ToggleButton = require('onyx/ToggleButton');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Groupbox from 'onyx/src/Groupbox/Groupbox.js';
+* 	import GroupboxHeader from 'onyx/src/GroupboxHeader/GroupboxHeader.js';
+* 	import Input from 'onyx/src/Input/Input.js';
+* 	import InputDecorator from 'onyx/src/InputDecorator.js';
+* 	import ToggleButton from 'onyx/src/ToggleButton/ToggleButton.js';
 *
 * 	{kind: Groupbox, components: [
 * 		{kind: GroupboxHeader, content: 'Sounds'},
@@ -44,7 +42,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/Groupbox~Groupbox.prototype */ {
 
 	/**

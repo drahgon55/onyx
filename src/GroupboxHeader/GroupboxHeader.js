@@ -1,12 +1,11 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/GroupboxHeader~GroupboxHeader} kind.
 * @module onyx/GroupboxHeader
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
 /**
 * {@link module:onyx/GroupboxHeader~GroupboxHeader} is a control designed to be placed inside an
@@ -14,10 +13,9 @@ var
 * first control inside the Groupbox.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Groupbox = require('onyx/Groupbox'),
-* 		GroupboxHeader = require('onyx/GroupboxHeader');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Groupbox from 'onyx/src/Groupbox/Groupbox.js';
+* 	import GroupboxHeader from 'onyx/src/GroupboxHeader/GroupboxHeader.js';
 *
 * 	{kind: Groupbox, components: [
 * 		{kind: GroupboxHeader, content: 'Sounds'},
@@ -31,7 +29,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/GroupboxHeader~GroupboxHeader.prototype */ {
 
 	/**

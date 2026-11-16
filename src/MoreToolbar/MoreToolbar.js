@@ -1,22 +1,19 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/MoreToolbar~MoreToolbar} kind.
 * @module onyx/MoreToolbar
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
-var
-	FittableLayout = require('layout/FittableLayout'),
-	FittableColumnsLayout = FittableLayout.Columns;
+import FittableLayout from 'layout/FittableLayout';
+var FittableColumnsLayout = FittableLayout.Columns;
 
-var
-	IconButton = require('onyx/IconButton'),
-	Menu = require('onyx/Menu'),
-	MenuDecorator = require('onyx/MenuDecorator');
+import IconButton from '../IconButton.js';
+import Menu from '../Menu/Menu.js';
+import MenuDecorator from '../MenuDecorator.js';
 
 /**
 * {@link module:onyx/MoreToolbar~MoreToolbar} extends {@link module:enyo/Control~Control}, providing a toolbar
@@ -24,10 +21,9 @@ var
 * content into an {@link module:onyx/Menu~Menu}.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		Button = require('onyx/Button'),
-* 		MoreToolbar = require('onyx/MoreToolbar');
+* 	import kind from 'enyo/src/kind.js';
+* 	import Button from 'onyx/src/Button/Button.js';
+* 	import MoreToolbar from 'onyx/src/MoreToolbar/MoreToolbar.js';
 *
 * 	{kind: MoreToolbar, components: [
 * 		{content: 'More Toolbar', unmoveable: true},
@@ -46,7 +42,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/MoreToolbar~MoreToolbar.prototype */ {
 
 	/**

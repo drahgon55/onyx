@@ -1,17 +1,15 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/TimePicker~TimePicker} kind.
 * @module onyx/TimePicker
 */
 
-var
-	kind = require('enyo/kind'),
-	Control = require('enyo/Control');
+import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
-var
-	Picker = require('onyx/Picker'),
-	PickerDecorator = require('onyx/PickerDecorator');
+import Picker from '../Picker/Picker.js';
+import PickerDecorator from '../PickerDecorator.js';
 
 /**
 * Fires when one of the [TimePicker]{@link module:onyx/TimePicker~TimePicker}'s fields is selected.
@@ -37,7 +35,7 @@ var
 * @extends module:enyo/Control~Control
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/TimePicker~TimePicker.prototype */ {
 
 	/**

@@ -1,4 +1,4 @@
-﻿require('onyx');
+﻿import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/TabPanels~TabPanels} kind.
@@ -6,17 +6,14 @@
 * @module onyx/TabPanels
 */
 
-var
-	kind = require('enyo/kind'),
-	utils = require('enyo/utils');
+import kind from 'enyo/src/kind.js';
+import utils from 'enyo/src/utils.js';
 
-var
-	FittableLayout = require('layout/FittableLayout'),
-	FittableRowsLayout = FittableLayout.Rows,
-	Panels = require('layout/Panels');
+import FittableLayout from 'layout/FittableLayout';
+import Panels from 'layout/Panels';
+var FittableRowsLayout = FittableLayout.Rows;
 
-var
-	TabBar = require('onyx/TabBar');
+import TabBar from './TabBar/TabBar.js';
 
 /**
 * onyx/TabPanels is a subkind of layout/Panels that displays a set of tabs,
@@ -26,9 +23,8 @@ var
 * by setting [draggable]{@link module:onyx/TabPanels~TabPanels#draggable} to `true`.
 *
 * ```javascript
-* var
-*     kind = require('enyo/kind'),
-*     TabPanels = require('onyx/TabPanels');
+* import kind from 'enyo/src/kind.js';
+* import TabPanels from 'onyx/src/TabPanels.js';
 *
 * kind({
 *     name: 'App',
@@ -48,7 +44,7 @@ var
 * @ui
 * @private
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/TabPanels~TabPanels.prototype */ {
 
 	/**

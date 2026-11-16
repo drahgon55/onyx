@@ -1,19 +1,17 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/ContextualPopup~ContextualPopup} kind.
 * @module onyx/ContextualPopup
 */
 
-var
-	kind = require('enyo/kind'),
-	utils = require('enyo/utils'),
-	Popup = require('enyo/Popup'),
-	Scroller = require('enyo/Scroller'),
-	TouchScrollStrategy = require('enyo/TouchScrollStrategy');
+import kind from 'enyo/src/kind.js';
+import utils from 'enyo/src/utils.js';
+import Popup from 'enyo/src/Popup/Popup.js';
+import Scroller from 'enyo/src/Scroller/Scroller.js';
+import TouchScrollStrategy from 'enyo/src/TouchScrollStrategy.js';
 
-var
-	Button = require('onyx/Button');
+import Button from '../Button/Button.js';
 
 /**
 * Fires when the popup is tapped.
@@ -45,10 +43,9 @@ var
 * account when using them.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		ContextualPopup = require('onyx/ContextualPopup'),
-* 		MenuDecorator = require('onyx/MenuDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import ContextualPopup from 'onyx/src/ContextualPopup/ContextualPopup.js';
+* 	import MenuDecorator from 'onyx/src/MenuDecorator.js';
 *
 * 	{kind: MenuDecorator, components: [
 * 		{content: 'Show Popup'},
@@ -70,7 +67,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/ContextualPopup~ContextualPopup.prototype */ {
 
 	/**

@@ -1,15 +1,13 @@
-require('onyx');
+import '../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/IntegerPicker~IntegerPicker} kind.
 * @module onyx/IntegerPicker
 */
 
-var
-	kind = require('enyo/kind');
+import kind from 'enyo/src/kind.js';
 
-var
-	Picker = require('onyx/Picker');
+import Picker from './Picker/Picker.js';
 
 /**
 * {@link module:onyx/IntegerPicker~IntegerPicker}, a subkind of {@link module:onyx/Picker~Picker}, is used to
@@ -26,10 +24,9 @@ var
 * be selected.
 *
 * ```javascript
-* 	var
-* 		kind = require('enyo/kind'),
-* 		IntegerPicker = require('onyx/IntegerPicker'),
-* 		PickerDecorator = require('onyx/PickerDecorator');
+* 	import kind from 'enyo/src/kind.js';
+* 	import IntegerPicker from 'onyx/src/IntegerPicker.js';
+* 	import PickerDecorator from 'onyx/src/PickerDecorator.js';
 *
 * 	{kind: PickerDecorator, components: [
 * 		{}, // this uses the defaultKind property of PickerDecorator to inherit from PickerButton
@@ -46,7 +43,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/IntegerPicker~IntegerPicker.prototype */ {
 
 	/**

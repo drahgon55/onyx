@@ -1,16 +1,14 @@
-require('onyx');
+import '../../index.js';
 
 /**
 * Contains the declaration for the {@link module:onyx/RadioGroup~RadioGroup} kind.
 * @module onyx/RadioGroup
 */
 
-var
-	kind = require('enyo/kind'),
-	Group = require('enyo/Group');
+import kind from 'enyo/src/kind.js';
+import Group from 'enyo/src/Group/Group.js';
 
-var
-	RadioButton = require('onyx/RadioButton');
+import RadioButton from '../RadioButton/RadioButton.js';
 
 /**
 * {@link module:onyx/RadioGroup~RadioGroup} is a group of {@link module:onyx/RadioButton~RadioButton} objects laid out
@@ -18,7 +16,7 @@ var
 * release any previously-tapped radio button.
 *
 * ```
-* var RadioGroup = require('onyx/RadioGroup');
+* import RadioGroup from 'onyx/src/RadioGroup/RadioGroup.js';
 *
 * {kind: RadioGroup, components: [
 * 	{content: 'foo', active: true},
@@ -32,7 +30,7 @@ var
 * @ui
 * @public
 */
-module.exports = kind(
+export default kind(
 	/** @lends module:onyx/RadioGroup~RadioGroup.prototype */ {
 
 	/**
