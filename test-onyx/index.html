@@ -47,7 +47,9 @@
 	"imports": {
 		"enyo/": "/enyo/",
 		"onyx/": "/onyx/",
-		"layout/": "/layout/"
+		"layout/": "/layout/",
+		"enyo-ilib": "/enyo-ilib/index.js",
+		"enyo-ilib/": "/enyo-ilib/"
 	}
 }
 </script>
@@ -63,6 +65,9 @@ import map above.</p>
 <h2>Across two package boundaries</h2>
 <p>onyx widgets that are built on the <code>layout</code> package.</p>
 <div id="layoutApp"></div>
+
+<h2>Locale-aware, through enyo-ilib</h2>
+<div id="i18nApp"></div>
 
 <h2>Checks</h2>
 <div id="log">running…</div>
@@ -123,6 +128,13 @@ import TabBar          from 'onyx/src/TabBar/TabBar.js';
 import TabPanels       from 'onyx/src/TabPanels.js';
 import MoreToolbar     from 'onyx/src/MoreToolbar/MoreToolbar.js';
 import DatePicker      from 'onyx/src/DatePicker/DatePicker.js';
+
+// The last two: locale-aware pickers, blocked on enyo-ilib until it was
+// converted. These reach onyx -> enyo-ilib -> its vendored iLib.
+import I18nDatePicker  from 'onyx/src/i18n/DatePicker.js';
+import I18nTimePicker  from 'onyx/src/i18n/TimePicker.js';
+import DateFactory     from 'enyo-ilib/ilib/lib/DateFactory.js';
+import DateFmt         from 'enyo-ilib/ilib/lib/DateFmt.js';
 
 const results = [];
 function check (name, pass, detail) {
@@ -377,6 +389,52 @@ ready(async function () {
 	check('DatePicker rendered its pickers through layout/FlyweightRepeater',
 		ld.$.date.hasNode().textContent.length > 0,
 		JSON.stringify(ld.$.date.hasNode().textContent.slice(0, 30)));
+
+	// --- the locale-aware pickers, onyx -> enyo-ilib ---
+	// `import 'enyo-ilib';` is a side-effect import: it registers the calendar
+	// and date classes into the synchronous registry DateFactory reads. So the
+	// check is the effect, not that the import resolved -- a non-Gregorian
+	// construction only works if registration actually ran.
+	check('i18n pickers are their kinds',
+		I18nDatePicker.prototype.kindName === 'onyx.DatePicker' &&
+		I18nTimePicker.prototype.kindName === 'onyx.TimePicker',
+		I18nDatePicker.prototype.kindName + ' / ' + I18nTimePicker.prototype.kindName);
+
+	const calendars = ['gregorian', 'julian', 'islamic', 'hebrew', 'persian', 'thaisolar'];
+	const unregistered = calendars.filter(function (type) {
+		try {
+			const dt = DateFactory({type: type, year: 1440, month: 1, day: 1});
+			return !dt || dt.getCalendar() !== type;
+		} catch (e) { return true; }
+	});
+	check('enyo-ilib side-effect import registered the calendars',
+		unregistered.length === 0,
+		unregistered.length ? 'unregistered: ' + unregistered.join(', ')
+			: calendars.length + ' calendars');
+
+	// Formatting, not merely constructing: locale data is fetched at runtime,
+	// so a DateFmt that constructs proves nothing about the loader.
+	let formatted = null, fmtError = null;
+	try {
+		const fmt = new DateFmt({locale: 'en-US', type: 'date', length: 'short'});
+		formatted = fmt.format(DateFactory({type: 'gregorian', year: 2026, month: 11, day: 16}));
+	} catch (e) { fmtError = String(e.message || e); }
+	check('DateFmt formatted a real date from fetched locale data',
+		formatted === '11/16/26', fmtError || 'formatted=' + JSON.stringify(formatted));
+
+	// Wrapped: without locale data this throws during render, which would
+	// abort the run and leave only the watchdog to report it. A named failure
+	// is more use than "did not finish".
+	let i18nRendered = false, i18nText = '', i18nError = null;
+	try {
+		const i18nDemo = new I18nDatePicker();
+		i18nDemo.renderInto(document.getElementById('i18nApp'));
+		i18nRendered = !!i18nDemo.hasNode();
+		i18nText = i18nDemo.hasNode().textContent;
+	} catch (e) { i18nError = String(e.message || e); }
+	check('locale-aware DatePicker rendered',
+		i18nRendered && i18nText.length > 0,
+		i18nError || JSON.stringify(i18nText.slice(0, 30)));
 
 	// `this.inherited(arguments)` subclassing an onyx widget. This is not a
 	// duplicate of enyo's own coverage: onyx's TabBar JSDoc tells app authors

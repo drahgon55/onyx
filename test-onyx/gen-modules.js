@@ -5,8 +5,9 @@
  *     node test-onyx/gen-modules.js
  *
  * Splits src/ into the modules a browser can actually import and the ones that
- * cannot resolve because they import a package that is not converted and not
- * checked out (enyo-ilib). all-modules.html reports those separately,
+ * cannot resolve because they import a package that is not available. All of onyx's
+ * dependencies are converted now, so nothing is blocked -- the split stays so
+ * the harness reports honestly if that ever changes. all-modules.html reports those separately,
  * so a genuine failure there is never hidden behind an expected one.
  */
 'use strict';
@@ -15,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const AVAILABLE = ['enyo', 'layout'];   // packages the import map can point at today
+const AVAILABLE = ['enyo', 'layout', 'enyo-ilib'];   // packages the import map can point at today
 
 function walk (dir, out) {
 	out = out || [];

@@ -41,25 +41,11 @@ export const modules = [
  "../src/ToggleIconButton.js",
  "../src/Toolbar/Toolbar.js",
  "../src/Tooltip/Tooltip.js",
- "../src/TooltipDecorator.js"
+ "../src/TooltipDecorator.js",
+ "../src/i18n/DatePicker.js",
+ "../src/i18n/TimePicker.js"
 ];
 
 // Cannot be imported in a browser: these reach for a package that has not
 // been converted to ES modules and is not checked out beside onyx.
-export const blocked = [
- {
-  "path": "../src/i18n/DatePicker.js",
-  "missing": [
-   "enyo-ilib",
-   "enyo-ilib/DateFmt"
-  ]
- },
- {
-  "path": "../src/i18n/TimePicker.js",
-  "missing": [
-   "enyo-ilib",
-   "enyo-ilib/DateFactory",
-   "enyo-ilib/DateFmt"
-  ]
- }
-];
+export const blocked = [];

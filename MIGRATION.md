@@ -289,22 +289,53 @@ A page links it after enyo's:
 
 ## Still outstanding
 
-**`enyo-ilib` is not converted, so two modules cannot load.** It is a separate
-repository, still CommonJS, and not checked out:
+**Nothing is outstanding here any more.** All 44 modules under `src/` load and
+work. `enyo-ilib` was the last blocker and is converted
+(`drahgon55/enyo-ilib` branch `esm`), so the two locale-aware pickers under
+`src/i18n/` now resolve:
 
-| Module | Needs |
-| --- | --- |
-| `src/i18n/DatePicker.js` | `enyo-ilib`, `enyo-ilib/DateFmt` |
-| `src/i18n/TimePicker.js` | `enyo-ilib`, `enyo-ilib/DateFactory`, `enyo-ilib/DateFmt` |
+```diff
+-import DateFmt from 'enyo-ilib/DateFmt';
++import DateFmt from 'enyo-ilib/ilib/lib/DateFmt.js';
+```
 
-Their specifiers are left **exactly as they were**, not rewritten. Rewriting
-them would mean inventing file paths inside a package that cannot be checked,
-and a plausible-looking wrong path is worse than a bare specifier that fails
-loudly at the import map.
+(The doubled path is real: the vendored iLib sits in an `ilib/` directory
+inside that package.)
 
-The other 42 modules load and work. `test-onyx/all-modules.html` lists the two
-separately rather than loading them, so an expected resolution failure can
-never mask a real one.
+`import 'enyo-ilib';` stays a **side-effect import**, for the same reason
+`import '../index.js'` did: it registers the calendar and date classes into the
+synchronous registry `DateFactory` reads. So the harness asserts the *effect* —
+that `DateFactory` can construct all six of gregorian, julian, islamic, hebrew,
+persian and thaisolar — not that the import resolved. Removing the registration
+leaves five of the six unregistered while `DateFmt` still works, so one check
+would not have caught it.
+
+### That package needs two import-map entries, not one
+
+```json
+"enyo-ilib": "/enyo-ilib/index.js",
+"enyo-ilib/": "/enyo-ilib/"
+```
+
+A trailing-slash key is a *prefix* mapping and does not resolve the bare
+specifier `enyo-ilib`, which is what `import 'enyo-ilib';` is — the browser
+says `Failed to resolve module specifier "enyo-ilib"`. This never arose for
+`enyo`, `onyx` or `layout` because nothing imports those bare.
+
+### Locale data is fetched, not imported
+
+`DateFmt` constructing proves nothing: iLib fetches its locale data at runtime,
+so the check formats a real date and compares the output (`11/16/26`). With the
+loader's base path broken, construction still succeeds and formatting fails
+with `No formats available for calendar gregorian in locale en-US`.
+
+One consequence for anyone writing a harness over this: **a clean console is
+not achievable.** iLib probes an app-level `resources/` directory
+(`glue.js`, `_loadManifest('', 'resources')`), which a library has no business
+shipping, so every load produces about twenty 404s to `/resources/...`. The
+right assertion is positive — every request under `ilib/locale/` is 200, and
+the only failing ones are that probe — rather than an exclusion filter, which
+would hide a genuine failure elsewhere.
 
 ### `layout` is converted now
 
@@ -376,7 +407,7 @@ In a browser (Chrome, served by `test-onyx/serve.py` from the directory
 holding both checkouts; console clean — no errors, no warnings, every request
 200, images included):
 
-- `test-onyx/index.html` — **36 checks, all passing.** It builds a Toolbar with
+- `test-onyx/index.html` — **40 checks, all passing.** It builds a Toolbar with
   a Grabber, an Input in an InputDecorator and a MenuDecorator; a row of
   Buttons and an Icon; a Checkbox and a ToggleButton; a PickerDecorator with a
   Picker; a ProgressBar and a Spinner. Then it dispatches real DOM clicks and
@@ -390,8 +421,8 @@ holding both checkouts; console clean — no errors, no warnings, every request
   reaches the DOM. Styling is asserted separately from presence: the body
   carries the `onyx` class, `.onyx-button` computes to `font-size: 16px`, and
   its `background-image` is the `gradient.png` from `images/`.
-- `test-onyx/all-modules.html` — 42/42 modules load **cold**, each in its own
-  document, 2 listed as blocked.
+- `test-onyx/all-modules.html` — **44/44** modules load **cold**, each in its
+  own document. Nothing is blocked.
 - `node test-onyx/check-cycles.mjs` — 45 modules, 84 static imports, no
   circular imports. This is the authority on cycles; the browser is not.
 
@@ -413,6 +444,8 @@ these was broken on purpose and the harness confirmed to catch it:
 | Remove `Spinner.js`'s `export default` entirely | `FAIL (load)` — the watchdog reports the link error |
 | Stop enyo wrapping the methods that use `this.inherited` | `FAIL (1)` — `trace=deeper`, a *silently skipped* super-call, not a throw |
 | Drop `FittableLayout.Columns` in the **layout** repository | `FAIL (1)` — MoreToolbar's layout, proving the two packages are wired |
+| Remove enyo-ilib's calendar registration import | `FAIL (1)` — five of six calendars unregistered, while `DateFmt` still passes |
+| Revert enyo-ilib's loader base to the unresolved `@` macro | `FAIL (2)` — no locale data; a different check from the one above |
 
 **Three of the checks turned out to be unfalsifiable, and breaking things on
 purpose is the only reason any of them were found.** All three are the same

@@ -9,8 +9,8 @@ import 'enyo-ilib';
 import kind from 'enyo/src/kind.js';
 import Signals from 'enyo/src/Signals.js';
 
-import dateFactory from 'enyo-ilib/DateFactory';
-import DateFmt from 'enyo-ilib/DateFmt';
+import dateFactory from 'enyo-ilib/ilib/lib/DateFactory.js';
+import DateFmt from 'enyo-ilib/ilib/lib/DateFmt.js';
 
 import TimePicker from '../TimePicker/TimePicker.js';
 

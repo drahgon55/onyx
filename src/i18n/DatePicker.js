@@ -9,7 +9,7 @@ import 'enyo-ilib';
 import kind from 'enyo/src/kind.js';
 import Signals from 'enyo/src/Signals.js';
 
-import DateFmt from 'enyo-ilib/DateFmt';
+import DateFmt from 'enyo-ilib/ilib/lib/DateFmt.js';
 
 import DatePicker from '../DatePicker/DatePicker.js';
 
