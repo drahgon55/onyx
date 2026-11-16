@@ -3,7 +3,9 @@ export const modules = [
  "../src/Button/Button.js",
  "../src/Checkbox/Checkbox.js",
  "../src/ContextualPopup/ContextualPopup.js",
+ "../src/DatePicker/DatePicker.js",
  "../src/Drawer.js",
+ "../src/FlyweightPicker.js",
  "../src/Grabber/Grabber.js",
  "../src/Groupbox/Groupbox.js",
  "../src/GroupboxHeader/GroupboxHeader.js",
@@ -16,6 +18,7 @@ export const modules = [
  "../src/Menu/Menu.js",
  "../src/MenuDecorator.js",
  "../src/MenuItem.js",
+ "../src/MoreToolbar/MoreToolbar.js",
  "../src/Picker/Picker.js",
  "../src/PickerButton.js",
  "../src/PickerDecorator.js",
@@ -29,7 +32,9 @@ export const modules = [
  "../src/Slider/Slider.js",
  "../src/Spinner/Spinner.js",
  "../src/Submenu/Submenu.js",
+ "../src/TabBar/TabBar.js",
  "../src/TabBarItem/TabBarItem.js",
+ "../src/TabPanels.js",
  "../src/TextArea/TextArea.js",
  "../src/TimePicker/TimePicker.js",
  "../src/ToggleButton/ToggleButton.js",
@@ -42,37 +47,6 @@ export const modules = [
 // Cannot be imported in a browser: these reach for a package that has not
 // been converted to ES modules and is not checked out beside onyx.
 export const blocked = [
- {
-  "path": "../src/DatePicker/DatePicker.js",
-  "missing": [
-   "layout/FlyweightRepeater"
-  ]
- },
- {
-  "path": "../src/FlyweightPicker.js",
-  "missing": [
-   "layout/FlyweightRepeater"
-  ]
- },
- {
-  "path": "../src/MoreToolbar/MoreToolbar.js",
-  "missing": [
-   "layout/FittableLayout"
-  ]
- },
- {
-  "path": "../src/TabBar/TabBar.js",
-  "missing": [
-   "layout/FittableColumns"
-  ]
- },
- {
-  "path": "../src/TabPanels.js",
-  "missing": [
-   "layout/FittableLayout",
-   "layout/Panels"
-  ]
- },
  {
   "path": "../src/i18n/DatePicker.js",
   "missing": [

@@ -10,7 +10,7 @@ import kind from 'enyo/src/kind.js';
 import utils from 'enyo/src/utils.js';
 import Scroller from 'enyo/src/Scroller/Scroller.js';
 
-import FittableColumns from 'layout/FittableColumns';
+import FittableColumns from 'layout/src/FittableColumns.js';
 
 import IconButton from '../IconButton.js';
 import Menu from '../Menu/Menu.js';

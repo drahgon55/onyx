@@ -9,7 +9,7 @@ import kind from 'enyo/src/kind.js';
 import Scroller from 'enyo/src/Scroller/Scroller.js';
 import TouchScrollStrategy from 'enyo/src/TouchScrollStrategy.js';
 
-import FlyweightRepeater from 'layout/FlyweightRepeater';
+import FlyweightRepeater from 'layout/src/FlyweightRepeater.js';
 
 import Picker from './Picker/Picker.js';
 

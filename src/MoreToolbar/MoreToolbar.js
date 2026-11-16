@@ -8,7 +8,7 @@ import '../../index.js';
 import kind from 'enyo/src/kind.js';
 import Control from 'enyo/src/Control/Control.js';
 
-import FittableLayout from 'layout/FittableLayout';
+import FittableLayout from 'layout/src/FittableLayout/FittableLayout.js';
 var FittableColumnsLayout = FittableLayout.Columns;
 
 import IconButton from '../IconButton.js';

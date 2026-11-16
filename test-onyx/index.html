@@ -46,7 +46,8 @@
 {
 	"imports": {
 		"enyo/": "/enyo/",
-		"onyx/": "/onyx/"
+		"onyx/": "/onyx/",
+		"layout/": "/layout/"
 	}
 }
 </script>
@@ -58,6 +59,10 @@
 import map above.</p>
 
 <div id="app"></div>
+
+<h2>Across two package boundaries</h2>
+<p>onyx widgets that are built on the <code>layout</code> package.</p>
+<div id="layoutApp"></div>
 
 <h2>Checks</h2>
 <div id="log">running…</div>
@@ -112,6 +117,13 @@ import MenuItem        from 'onyx/src/MenuItem.js';
 import ProgressBar     from 'onyx/src/ProgressBar/ProgressBar.js';
 import Spinner         from 'onyx/src/Spinner/Spinner.js';
 
+// These four were unloadable until the layout package was converted: each
+// reaches across two package boundaries, onyx -> layout -> enyo.
+import TabBar          from 'onyx/src/TabBar/TabBar.js';
+import TabPanels       from 'onyx/src/TabPanels.js';
+import MoreToolbar     from 'onyx/src/MoreToolbar/MoreToolbar.js';
+import DatePicker      from 'onyx/src/DatePicker/DatePicker.js';
+
 const results = [];
 function check (name, pass, detail) {
 	results.push((pass ? 'PASS  ' : 'FAIL  ') + name + (detail ? '  — ' + detail : ''));
@@ -138,7 +150,10 @@ const expectedKinds = [
 	[Picker, 'onyx.Picker'], [PickerDecorator, 'onyx.PickerDecorator'],
 	[Menu, 'onyx.Menu'], [MenuDecorator, 'onyx.MenuDecorator'],
 	[MenuItem, 'onyx.MenuItem'], [ProgressBar, 'onyx.ProgressBar'],
-	[Spinner, 'onyx.Spinner']
+	[Spinner, 'onyx.Spinner'],
+	// the layout-dependent four
+	[TabBar, 'onyx.TabBar'], [TabPanels, 'onyx.TabPanels'],
+	[MoreToolbar, 'onyx.MoreToolbar'], [DatePicker, 'onyx.DatePicker']
 ];
 const wrongKinds = expectedKinds.filter(function (pair) {
 	return typeof pair[0] !== 'function' ||
@@ -308,6 +323,60 @@ ready(async function () {
 	check('ProgressBar reflects progress',
 		d.$.pb.$.bar.hasNode().style.width === '75%',
 		'width=' + d.$.pb.$.bar.hasNode().style.width);
+
+	// --- the layout-dependent widgets, rendered for real ---
+	// These reach onyx -> layout -> enyo, so this is the only check here that
+	// exercises two package boundaries at once. All four were unloadable
+	// before the layout package was converted.
+	const LayoutDemo = kind({
+		name: 'OnyxLayoutDemo',
+		kind: Control,
+		components: [
+			{name: 'tabs', kind: TabPanels, animate: false, style: 'height: 120px;', components: [
+				{name: 'tp0', content: 'First panel'},
+				{name: 'tp1', content: 'Second panel'},
+				{name: 'tp2', content: 'Third panel'}
+			]},
+			{name: 'more', kind: MoreToolbar, components: [
+				{content: 'More toolbar'}
+			]},
+			{name: 'date', kind: DatePicker}
+		]
+	});
+	let layoutDemoError = null, ld = null;
+	try {
+		ld = new LayoutDemo();
+		ld.renderInto(document.getElementById('layoutApp'));
+	} catch (e) { layoutDemoError = String(e); }
+
+	check('layout-dependent widgets render', layoutDemoError === null && !!(ld && ld.hasNode()),
+		layoutDemoError || 'ok');
+	check('TabPanels built its TabBar from layout/Panels',
+		!!ld.$.tabs.$.bar && ld.$.tabs.$.bar.kindName === 'onyx.TabBar',
+		ld.$.tabs.$.bar && ld.$.tabs.$.bar.kindName);
+	// Not "starts on panel 0": each tab activates as it is added, so the last
+	// one wins and TabPanels opens on it. That is enyo Group behaviour and
+	// predates this conversion. The invariant worth asserting is that the
+	// panel index and the TabBar selection agree.
+	check('TabPanels index agrees with its TabBar selection',
+		ld.$.tabs.get('index') === ld.$.tabs.$.bar.selectedId,
+		'index=' + ld.$.tabs.get('index') + ' selectedId=' + ld.$.tabs.$.bar.selectedId);
+
+	ld.$.tabs.setIndex(0);
+	check('TabPanels switched panel through layout/Panels',
+		ld.$.tabs.get('index') === 0, 'index=' + ld.$.tabs.get('index'));
+	check('the layout arranger hid the inactive panel',
+		styleOf(ld.$.tp0.hasNode(), 'display') !== 'none' &&
+		styleOf(ld.$.tp2.hasNode(), 'display') === 'none',
+		'tp0=' + styleOf(ld.$.tp0.hasNode(), 'display') +
+		' tp2=' + styleOf(ld.$.tp2.hasNode(), 'display'));
+
+	check('MoreToolbar got its layout/FittableLayout columns layout',
+		ld.$.more.layout && /Fittable/.test(ld.$.more.layout.kindName),
+		ld.$.more.layout && ld.$.more.layout.kindName);
+	check('DatePicker rendered its pickers through layout/FlyweightRepeater',
+		ld.$.date.hasNode().textContent.length > 0,
+		JSON.stringify(ld.$.date.hasNode().textContent.slice(0, 30)));
 
 	// `this.inherited(arguments)` subclassing an onyx widget. This is not a
 	// duplicate of enyo's own coverage: onyx's TabBar JSDoc tells app authors

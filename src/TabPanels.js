@@ -9,8 +9,8 @@
 import kind from 'enyo/src/kind.js';
 import utils from 'enyo/src/utils.js';
 
-import FittableLayout from 'layout/FittableLayout';
-import Panels from 'layout/Panels';
+import FittableLayout from 'layout/src/FittableLayout/FittableLayout.js';
+import Panels from 'layout/src/Panels/Panels.js';
 var FittableRowsLayout = FittableLayout.Rows;
 
 import TabBar from './TabBar/TabBar.js';

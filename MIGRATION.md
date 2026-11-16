@@ -289,30 +289,54 @@ A page links it after enyo's:
 
 ## Still outstanding
 
-**`layout` and `enyo-ilib` are not converted, so seven modules cannot load.**
-This is the one real gap. Those are separate repositories, still CommonJS, and
-not checked out:
+**`enyo-ilib` is not converted, so two modules cannot load.** It is a separate
+repository, still CommonJS, and not checked out:
 
 | Module | Needs |
 | --- | --- |
-| `src/TabPanels.js` | `layout/FittableLayout`, `layout/Panels` |
-| `src/TabBar/TabBar.js` | `layout/FittableColumns` |
-| `src/MoreToolbar/MoreToolbar.js` | `layout/FittableLayout` |
-| `src/FlyweightPicker.js` | `layout/FlyweightRepeater` |
-| `src/DatePicker/DatePicker.js` | (via `FlyweightPicker`) |
 | `src/i18n/DatePicker.js` | `enyo-ilib`, `enyo-ilib/DateFmt` |
 | `src/i18n/TimePicker.js` | `enyo-ilib`, `enyo-ilib/DateFactory`, `enyo-ilib/DateFmt` |
 
 Their specifiers are left **exactly as they were**, not rewritten. Rewriting
-them would mean inventing file paths inside packages that cannot be checked, and
-a plausible-looking wrong path is worse than a bare specifier that fails loudly
-at the import map. Once `layout` gets the same treatment, these become
-`layout/src/....js` and the page adds `"layout/": "/layout/"` to its map.
+them would mean inventing file paths inside a package that cannot be checked,
+and a plausible-looking wrong path is worse than a bare specifier that fails
+loudly at the import map.
 
-The other 37 modules — every button, input, popup, menu, picker, slider,
-toolbar and progress indicator — load and work. `test-onyx/all-modules.html`
-lists the seven separately rather than importing them, so an expected
-resolution failure can never mask a real one.
+The other 42 modules load and work. `test-onyx/all-modules.html` lists the two
+separately rather than loading them, so an expected resolution failure can
+never mask a real one.
+
+### `layout` is converted now
+
+Five modules used to be in that table — `TabPanels`, `TabBar`, `MoreToolbar`,
+`FlyweightPicker` and (through `FlyweightPicker`) `DatePicker`. `drahgon55/layout`
+branch `esm` is the same treatment applied to the layout library, so the four
+specifiers that reached it are now rewritten to the files they name:
+
+```diff
+-import Panels from 'layout/Panels';
++import Panels from 'layout/src/Panels/Panels.js';
+```
+
+and a page adds one entry to its map:
+
+```html
+<script type="importmap">
+{ "imports": { "enyo/": "/enyo/", "onyx/": "/onyx/", "layout/": "/layout/" } }
+</script>
+```
+
+`test-onyx/index.html` renders `TabPanels`, `MoreToolbar` and `DatePicker` for
+real and switches panels through `layout/Panels`, which is the only part of this
+harness crossing two package boundaries at once — onyx → layout → enyo. It is
+wired, not merely co-located: dropping `FittableLayout.Columns` in the layout
+repository turns `MoreToolbar`'s check here red.
+
+One assertion was corrected while writing those checks. `TabPanels` does not
+start on panel 0 — it starts on the *last* panel, because each tab activates as
+it is added and the last one wins. That is enyo `Group` behaviour and predates
+this conversion, so the check asserts the invariant that actually matters: that
+the panel index and the `TabBar` selection agree.
 
 **Popups are not positioned by any stylesheet.** Onyx positions popups with
 rules like `.onyx-menu { top: 100%; left: 0 }`, and enyo's `Popup.js` writes
@@ -340,9 +364,10 @@ as enyo: the browser does not need it, and adding it would break `gulpfile.js`.
 Static:
 
 - All 45 files parse as ES modules (`node --check` on each, renamed `.mjs`).
-- All 170 resolvable import specifiers point at a file that exists — relative
-  ones against this tree, `enyo/*` ones against the converted enyo checkout. The
-  only unresolvable specifiers are the 7 modules' `layout`/`enyo-ilib` imports
+- All 175 resolvable import specifiers point at a file that exists — relative
+  ones against this tree, `enyo/*` and `layout/*` ones against the converted
+  enyo and layout checkouts. The
+  only unresolvable specifiers are the two i18n modules' `enyo-ilib` imports
   listed above.
 - No `require(` or `module.exports` anywhere in `src/` or `index.js`.
 - Zero cycles (Tarjan plus an independent DFS back-edge check).
@@ -351,7 +376,7 @@ In a browser (Chrome, served by `test-onyx/serve.py` from the directory
 holding both checkouts; console clean — no errors, no warnings, every request
 200, images included):
 
-- `test-onyx/index.html` — **29 checks, all passing.** It builds a Toolbar with
+- `test-onyx/index.html` — **36 checks, all passing.** It builds a Toolbar with
   a Grabber, an Input in an InputDecorator and a MenuDecorator; a row of
   Buttons and an Icon; a Checkbox and a ToggleButton; a PickerDecorator with a
   Picker; a ProgressBar and a Spinner. Then it dispatches real DOM clicks and
@@ -365,8 +390,8 @@ holding both checkouts; console clean — no errors, no warnings, every request
   reaches the DOM. Styling is asserted separately from presence: the body
   carries the `onyx` class, `.onyx-button` computes to `font-size: 16px`, and
   its `background-image` is the `gradient.png` from `images/`.
-- `test-onyx/all-modules.html` — 37/37 modules load **cold**, each in its own
-  document, 7 listed as blocked.
+- `test-onyx/all-modules.html` — 42/42 modules load **cold**, each in its own
+  document, 2 listed as blocked.
 - `node test-onyx/check-cycles.mjs` — 45 modules, 84 static imports, no
   circular imports. This is the authority on cycles; the browser is not.
 
@@ -387,6 +412,7 @@ these was broken on purpose and the harness confirmed to catch it:
 | Export `kind` instead of the kind from `Spinner.js` | `FAIL` — "each default export is its kind constructor — wrong: onyx.Spinner" |
 | Remove `Spinner.js`'s `export default` entirely | `FAIL (load)` — the watchdog reports the link error |
 | Stop enyo wrapping the methods that use `this.inherited` | `FAIL (1)` — `trace=deeper`, a *silently skipped* super-call, not a throw |
+| Drop `FittableLayout.Columns` in the **layout** repository | `FAIL (1)` — MoreToolbar's layout, proving the two packages are wired |
 
 **Three of the checks turned out to be unfalsifiable, and breaking things on
 purpose is the only reason any of them were found.** All three are the same
