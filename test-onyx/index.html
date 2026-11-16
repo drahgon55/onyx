@@ -309,6 +309,27 @@ ready(async function () {
 		d.$.pb.$.bar.hasNode().style.width === '75%',
 		'width=' + d.$.pb.$.bar.hasNode().style.width);
 
+	// `this.inherited(arguments)` subclassing an onyx widget. This is not a
+	// duplicate of enyo's own coverage: onyx's TabBar JSDoc tells app authors
+	// to write exactly this, so it is onyx's documented advice that is on the
+	// line, across a package boundary. It threw under ESM until enyo c0a23de7.
+	const inheritedTrace = [];
+	const MyButton = kind({
+		name: 'test.MyButton',
+		kind: Button,
+		create: function () { this.inherited(arguments); inheritedTrace.push('mine'); }
+	});
+	const Deeper = kind({
+		name: 'test.Deeper',
+		kind: MyButton,
+		create: function () { this.inherited(arguments); inheritedTrace.push('deeper'); }
+	});
+	let inheritedError = null;
+	try { new Deeper({content: 'x'}); } catch (e) { inheritedError = String(e); }
+	check('this.inherited(arguments) works subclassing an onyx widget',
+		inheritedError === null && inheritedTrace.join(',') === 'mine,deeper',
+		inheritedError || 'trace=' + inheritedTrace.join(','));
+
 	// Only now, with the body class already asserted, is it safe for this page
 	// to touch index.js itself.
 	const onyxPackage = await import('onyx/index.js');

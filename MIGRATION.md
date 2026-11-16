@@ -236,11 +236,24 @@ harness caught it immediately. It is fixed in the enyo repository, on the same
 `esm` branch, in commit `603e5430` — two call sites, changed to the explicit
 form.
 
-`kind.inherited` itself is still broken, and that matters for application code:
-`this.inherited(arguments)` is a documented public idiom in Enyo 2.x and will
-throw in any ESM app kind. Use `kind.inherit(function (sup) { ... })`, which
-enyo already ships and recommends, or the explicit prototype form. See enyo's
-`MIGRATION.md`.
+`kind.inherited` itself was broken too, which mattered much more:
+`this.inherited(arguments)` is a documented public idiom in Enyo 2.x, and
+onyx's own `TabBar` JSDoc tells app authors to write it. **That is fixed in
+enyo `c0a23de7`** — `kind.extendMethods` now identifies the methods that use
+the idiom (via `Function.prototype.toString`, once per kind at creation) and
+wraps only those, so `kind.inherited` can read the executing method instead of
+`arguments.callee`. Nothing in enyo's own `src/` needed wrapping.
+
+Verified from this side, across the package boundary: a kind subclassing
+`onyx/Button` and calling `this.inherited(arguments)` works, nested two levels
+deep, and the replacement form `this.inherited(arguments, [...])` returns the
+replaced value. `test-onyx/index.html` keeps a check on it, because it is
+onyx's documented advice that depends on it.
+
+Onyx itself never used the idiom — its only occurrence, `TabBar.js:53`, is
+inside a JSDoc sample showing a consumer app, not executable code. Every
+super-call in `src/` uses the explicit
+`Base.prototype.method.apply(this, arguments)` form.
 
 ## Styling: compiled once, committed
 
@@ -338,7 +351,7 @@ In a browser (Chrome, served by `test-onyx/serve.py` from the directory
 holding both checkouts; console clean — no errors, no warnings, every request
 200, images included):
 
-- `test-onyx/index.html` — **28 checks, all passing.** It builds a Toolbar with
+- `test-onyx/index.html` — **29 checks, all passing.** It builds a Toolbar with
   a Grabber, an Input in an InputDecorator and a MenuDecorator; a row of
   Buttons and an Icon; a Checkbox and a ToggleButton; a PickerDecorator with a
   Picker; a ProgressBar and a Spinner. Then it dispatches real DOM clicks and
@@ -373,6 +386,7 @@ these was broken on purpose and the harness confirmed to catch it:
 | Empty `css/onyx.css` | `FAIL (3)` — font-size, background image, font family |
 | Export `kind` instead of the kind from `Spinner.js` | `FAIL` — "each default export is its kind constructor — wrong: onyx.Spinner" |
 | Remove `Spinner.js`'s `export default` entirely | `FAIL (load)` — the watchdog reports the link error |
+| Stop enyo wrapping the methods that use `this.inherited` | `FAIL (1)` — `trace=deeper`, a *silently skipped* super-call, not a throw |
 
 **Three of the checks turned out to be unfalsifiable, and breaking things on
 purpose is the only reason any of them were found.** All three are the same
