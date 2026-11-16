@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Onyx ESM — every module</title>
+<style>
+ body { font: 13px/1.5 ui-monospace, monospace; margin: 2rem; }
+ h1, h2, p { font-family: system-ui, sans-serif; }
+ .ok { color: #137333; } .bad { color: #c5221f; font-weight: bold; }
+ .skip { color: #8a6d00; }
+ #summary { font: 600 16px/1.5 system-ui, sans-serif; margin: 1rem 0; }
+</style>
+
+<!-- Both package prefixes. Served from the directory holding enyo/ and onyx/. -->
+<script type="importmap">
+{
+	"imports": {
+		"enyo/": "/enyo/",
+		"onyx/": "/onyx/"
+	}
+}
+</script>
+</head>
+<body>
+<h1>Every module under <code>src/</code></h1>
+<p>Each module is imported on its own, so that nothing is hidden by another
+module having already pulled it in. Failures here are usually circular-import
+TDZ errors, or top-level code that assumed a bundler shim.</p>
+<div id="summary">running…</div>
+<div id="out"></div>
+
+<h2>Blocked on unconverted packages</h2>
+<p>These import <code>layout</code> or <code>enyo-ilib</code>, which are separate
+repositories, still CommonJS, and not checked out. Listed rather than imported,
+so that an expected resolution failure never masks a real one.</p>
+<div id="blockedOut"></div>
+
+<script type="module">
+import {modules, blocked} from './modules.js';
+
+const out = document.getElementById('out');
+const failures = [];
+
+for (const m of modules) {
+	let line;
+	try {
+		const ns = await import(m);
+		const hasDefault = Object.prototype.hasOwnProperty.call(ns, 'default');
+		line = '<div class="ok">ok    ' + m + (hasDefault ? '' : '   (no default export)') + '</div>';
+	} catch (e) {
+		failures.push([m, String(e)]);
+		line = '<div class="bad">FAIL  ' + m + '   ' + String(e).replace(/</g, '&lt;') + '</div>';
+	}
+	out.insertAdjacentHTML('beforeend', line);
+}
+
+document.getElementById('blockedOut').innerHTML = blocked.map(function (b) {
+	return '<div class="skip">skip  ' + b.path + '   needs ' + b.missing.join(', ') + '</div>';
+}).join('');
+
+document.getElementById('summary').textContent =
+	modules.length + ' modules imported, ' + failures.length + ' failed; ' +
+	blocked.length + ' skipped (unconverted packages)';
+document.title = failures.length ? 'FAIL (' + failures.length + ')' : 'ALL ' + modules.length + ' OK';
+window.onyxEsmModuleTest = {total: modules.length, failures: failures, blocked: blocked.length};
+console.log(failures.length
+	? 'MODULE FAILURES: ' + JSON.stringify(failures, null, 1)
+	: 'ALL ' + modules.length + ' MODULES EVALUATED CLEANLY (' + blocked.length + ' skipped)');
+</script>
+</body>
+</html>

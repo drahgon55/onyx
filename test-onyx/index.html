@@ -1,0 +1,271 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Onyx ESM</title>
+
+<!-- enyo's own stylesheet, then onyx's generated one. -->
+<link rel="stylesheet" href="/enyo/css/enyo.css">
+<link rel="stylesheet" href="/onyx/css/onyx.css">
+<style>
+ body { font: 14px/1.5 system-ui, sans-serif; margin: 2rem; background: #fff; }
+ h1, h2 { font-family: system-ui, sans-serif; }
+ #app { margin: 1rem 0; }
+ .row { margin-bottom: 1rem; }
+ #log { white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 13px; color: #444; }
+ #log .f { color: #c5221f; font-weight: bold; }
+
+ /*
+  * This rule belongs to the application, not to onyx, and it is not new here.
+  * Onyx positions popups with rules like `.onyx-menu { top: 100%; left: 0 }`
+  * and enyo's Popup.js writes left/top/z-index inline, but neither
+  * enyo/css/enyo.css nor any onyx .less ever declares `position: absolute`
+  * for `.enyo-popup`. Without it a floating Menu or Picker lands wherever
+  * normal flow puts it. That gap is in onyx 2.7 as published and has nothing
+  * to do with the module conversion -- see MIGRATION.md. The page supplies it
+  * so the demo is positioned the way an app would be.
+  */
+ .enyo-popup { position: absolute; }
+</style>
+
+<!--
+	Onyx is a separate package from enyo, so every `enyo/src/...` specifier in
+	src/ is a bare specifier. This map is what resolves them, and it is the
+	only configuration a page needs. Serve the directory that holds both
+	checkouts:
+
+		cd /path/containing/enyo/and/onyx && python3 -m http.server
+
+	`onyx/` is mapped too, because that is the form the JSDoc examples use.
+-->
+<script type="importmap">
+{
+	"imports": {
+		"enyo/": "/enyo/",
+		"onyx/": "/onyx/"
+	}
+}
+</script>
+</head>
+<body>
+
+<h1>Onyx widgets, loaded as ES modules</h1>
+<p>No bundler, no build step: just <code>&lt;script type="module"&gt;</code> and the
+import map above.</p>
+
+<div id="app"></div>
+
+<h2>Checks</h2>
+<div id="log">running…</div>
+
+<script type="module">
+// Imported exactly the way the JSDoc examples are now written.
+import kind     from 'enyo/src/kind.js';
+import Control  from 'enyo/src/Control/Control.js';
+import ready    from 'enyo/src/ready.js';
+
+import {version}       from 'onyx/index.js';
+import Button          from 'onyx/src/Button/Button.js';
+import Checkbox        from 'onyx/src/Checkbox/Checkbox.js';
+import ToggleButton    from 'onyx/src/ToggleButton/ToggleButton.js';
+import Toolbar         from 'onyx/src/Toolbar/Toolbar.js';
+import Grabber         from 'onyx/src/Grabber/Grabber.js';
+import Icon            from 'onyx/src/Icon/Icon.js';
+import InputDecorator  from 'onyx/src/InputDecorator.js';
+import Input           from 'onyx/src/Input/Input.js';
+import Picker          from 'onyx/src/Picker/Picker.js';
+import PickerDecorator from 'onyx/src/PickerDecorator.js';
+import Menu            from 'onyx/src/Menu/Menu.js';
+import MenuDecorator   from 'onyx/src/MenuDecorator.js';
+import MenuItem        from 'onyx/src/MenuItem.js';
+import ProgressBar     from 'onyx/src/ProgressBar/ProgressBar.js';
+import Spinner         from 'onyx/src/Spinner/Spinner.js';
+
+const results = [];
+function check (name, pass, detail) {
+	results.push((pass ? 'PASS  ' : 'FAIL  ') + name + (detail ? '  — ' + detail : ''));
+	const el = document.getElementById('log');
+	el.innerHTML = results.map(function (r) {
+		return r.indexOf('FAIL') === 0 ? '<span class="f">' + r + '</span>' : r;
+	}).join('\n');
+	if (!pass) console.error('FAIL: ' + name + (detail ? '  — ' + detail : ''));
+}
+
+// ---------------------------------------------------------------- modules ---
+
+check('version named export from index.js', version === '2.7.0', 'version=' + version);
+check('every widget module is a kind', [
+	Button, Checkbox, ToggleButton, Toolbar, Grabber, Icon, InputDecorator,
+	Input, Picker, PickerDecorator, Menu, MenuDecorator, MenuItem,
+	ProgressBar, Spinner
+].every(function (k) { return typeof k === 'function'; }));
+
+// index.js runs dom.addBodyClass('onyx') as a side effect. Every onyx
+// stylesheet is written as `.onyx .onyx-button`-style descendant rules off
+// this class, so if the 44 `require('onyx')` statements had been dropped the
+// widgets would render unstyled with no error at all. enyo queues the class
+// until the first root renders, so this is only true after renderInto below.
+check('onyx body class still queued before any render',
+	!document.body.classList.contains('onyx'));
+
+// -------------------------------------------------------------- the widgets ---
+
+let buttonTaps = 0, checkboxChanges = 0, toggleChanges = 0, menuSelections = 0;
+let lastMenuSelection = null;
+
+const Demo = kind({
+	name: 'OnyxEsmDemo',
+	kind: Control,
+	components: [
+		{kind: Toolbar, components: [
+			{kind: Grabber},
+			{content: 'Onyx toolbar'},
+			{kind: InputDecorator, components: [
+				{name: 'input', kind: Input, placeholder: 'type here'}
+			]},
+			{kind: MenuDecorator, onSelect: 'menuSelected', components: [
+				{name: 'menuBtn', content: 'Menu'},
+				{name: 'menu', kind: Menu, floating: true, components: [
+					{name: 'mi1', content: 'First'},
+					{classes: 'onyx-menu-divider'},
+					{name: 'mi2', content: 'Second'}
+				]}
+			]}
+		]},
+
+		{classes: 'row', components: [
+			{name: 'btn', kind: Button, content: 'Button', ontap: 'buttonTapped'},
+			{kind: Button, content: 'Affirmative', classes: 'onyx-affirmative'},
+			{kind: Button, content: 'Negative', classes: 'onyx-negative'},
+			{kind: Icon, src: '/onyx/images/more.png'}
+		]},
+
+		{classes: 'row', components: [
+			{name: 'cb', kind: Checkbox, onchange: 'checkboxChanged'},
+			{name: 'tb', kind: ToggleButton, onChange: 'toggleChanged'}
+		]},
+
+		{classes: 'row', components: [
+			{name: 'picker', kind: PickerDecorator, components: [
+				{},   // PickerDecorator's defaultKind is PickerButton
+				{name: 'pickerMenu', kind: Picker, components: [
+					{name: 'p1', content: 'Gmail', active: true},
+					{name: 'p2', content: 'Yahoo'},
+					{name: 'p3', content: 'Outlook'}
+				]}
+			]}
+		]},
+
+		{classes: 'row', components: [
+			{name: 'pb', kind: ProgressBar, progress: 40},
+			{kind: Spinner}
+		]}
+	],
+
+	buttonTapped:    function () { buttonTaps++; this.$.btn.set('content', 'Tapped ' + buttonTaps); },
+	checkboxChanged: function () { checkboxChanges++; },
+	toggleChanged:   function () { toggleChanges++; },
+	menuSelected:    function (sender, event) {
+		menuSelections++;
+		lastMenuSelection = event.originator && event.originator.content;
+	}
+});
+
+function styleOf (node, prop) {
+	return getComputedStyle(node).getPropertyValue(prop);
+}
+
+ready(function () {
+	const d = new Demo();
+	d.renderInto(document.getElementById('app'));
+	check('demo rendered', !!d.hasNode());
+
+	// The side effect of index.js, flushed by the first renderInto. Dropping
+	// the `import '../index.js'` statements would lose this silently.
+	check('onyx body class applied by index.js side effect',
+		document.body.classList.contains('onyx'));
+
+	// --- styling actually applied, not merely present in the DOM ---
+	const btnNode = d.$.btn.hasNode();
+	check('button has onyx classes', btnNode.className.indexOf('onyx-button') !== -1,
+		btnNode.className);
+	check('css/onyx.css loaded and applied',
+		styleOf(btnNode, 'font-size') === '16px',
+		'font-size=' + styleOf(btnNode, 'font-size'));
+	check('button background image from onyx.css',
+		styleOf(btnNode, 'background-image').indexOf('gradient.png') !== -1,
+		styleOf(btnNode, 'background-image'));
+	check('body picked up .onyx font rules',
+		styleOf(document.body, 'font-family').indexOf('Helvetica Neue') !== -1 ||
+		styleOf(d.hasNode(), 'font-family').indexOf('Helvetica Neue') !== -1,
+		styleOf(d.hasNode(), 'font-family'));
+
+	// --- interaction: a real DOM click through enyo's dispatcher ---
+	btnNode.click();
+	check('Button ontap handler fired', buttonTaps === 1, 'taps=' + buttonTaps);
+	check('set() re-rendered the button', btnNode.textContent === 'Tapped 1',
+		btnNode.textContent);
+
+	d.$.cb.hasNode().click();
+	check('Checkbox toggled by a real click', d.$.cb.get('checked') === true,
+		'checked=' + d.$.cb.get('checked'));
+	check('Checkbox onchange fired', checkboxChanges === 1, 'changes=' + checkboxChanges);
+
+	const toggleBefore = d.$.tb.get('value');
+	d.$.tb.hasNode().click();
+	check('ToggleButton flipped value', d.$.tb.get('value') !== toggleBefore,
+		toggleBefore + ' -> ' + d.$.tb.get('value'));
+	check('ToggleButton onChange fired', toggleChanges === 1, 'changes=' + toggleChanges);
+
+	// --- layering: a floating Menu renders outside the control tree ---
+	check('Menu starts hidden', d.$.menu.get('showing') === false);
+	d.$.menuBtn.hasNode().click();
+	check('Menu opened on activator click', d.$.menu.get('showing') === true);
+	check('floating Menu left the control tree for the floating layer',
+		d.$.menu.hasNode().parentNode !== d.$.menuBtn.hasNode().parentNode,
+		'menu parent = ' + d.$.menu.hasNode().parentNode.className);
+	check('floating Menu is positioned and stacked',
+		styleOf(d.$.menu.hasNode(), 'position') === 'absolute' &&
+		parseInt(styleOf(d.$.menu.hasNode(), 'z-index'), 10) > 0,
+		'position=' + styleOf(d.$.menu.hasNode(), 'position') +
+		' z-index=' + styleOf(d.$.menu.hasNode(), 'z-index'));
+	check('Popup.js computed a position for the floating Menu',
+		/\d/.test(d.$.menu.hasNode().style.top) && /\d/.test(d.$.menu.hasNode().style.left),
+		'top=' + d.$.menu.hasNode().style.top + ' left=' + d.$.menu.hasNode().style.left);
+
+	d.$.mi2.hasNode().click();
+	check('MenuItem onSelect reached the decorator', menuSelections === 1,
+		'selections=' + menuSelections);
+	check('onSelect carried the item', lastMenuSelection === 'Second',
+		'content=' + lastMenuSelection);
+
+	// --- Picker: layering plus selection writing back to the button ---
+	const pickerButton = d.$.picker.children[0];
+	check('PickerButton took the decorator defaultKind',
+		pickerButton.kindName === 'onyx.PickerButton', pickerButton.kindName);
+	check('Picker initialised to the active item',
+		pickerButton.get('content') === 'Gmail', pickerButton.get('content'));
+
+	pickerButton.hasNode().click();
+	check('Picker opened', d.$.pickerMenu.get('showing') === true);
+	d.$.p3.hasNode().click();
+	check('Picker closed on selection', d.$.pickerMenu.get('showing') === false);
+	check('selection written back to the PickerButton',
+		pickerButton.get('content') === 'Outlook', pickerButton.get('content'));
+
+	// --- a published property drives the DOM ---
+	d.$.pb.set('progress', 75);
+	check('ProgressBar reflects progress',
+		d.$.pb.$.bar.hasNode().style.width === '75%',
+		'width=' + d.$.pb.$.bar.hasNode().style.width);
+
+	const failed = results.filter(function (r) { return r.indexOf('FAIL') === 0; });
+	document.title = failed.length ? 'FAIL (' + failed.length + ')' : 'ALL PASS';
+	window.onyxEsmTest = {results: results, failed: failed.length, total: results.length};
+	console.log(failed.length
+		? 'ONYX TESTS FAILED: ' + failed.join(' | ')
+		: 'ALL ' + results.length + ' ONYX TESTS PASSED');
+});
+</script>
+</body>
+</html>
