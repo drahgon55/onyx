@@ -62,6 +62,29 @@ import map above.</p>
 <h2>Checks</h2>
 <div id="log">running…</div>
 
+<!--
+	A module that fails to LINK -- a missing export, an unresolvable specifier --
+	never runs, so the module script below cannot report its own failure and the
+	page would sit on "running…" with a green-looking title forever. This
+	classic script is not a module, so it always runs, and it turns that silence
+	into a visible failure.
+-->
+<script>
+window.addEventListener('error', function (e) {
+	document.title = 'FAIL (load)';
+	document.getElementById('log').innerHTML =
+		'<span class="f">FAIL  the page did not load: ' +
+		String(e.message).replace(/</g, '&lt;') + '</span>';
+});
+setTimeout(function () {
+	if (!window.onyxEsmTest) {
+		document.title = 'FAIL (did not finish)';
+		document.getElementById('log').insertAdjacentHTML('beforeend',
+			'\n<span class="f">FAIL  checks did not finish — see the console</span>');
+	}
+}, 10000);
+</script>
+
 <script type="module">
 // Imported exactly the way the JSDoc examples are now written.
 import kind     from 'enyo/src/kind.js';
@@ -101,11 +124,29 @@ function check (name, pass, detail) {
 
 // ---------------------------------------------------------------- modules ---
 
-check('every widget module is a kind', [
-	Button, Checkbox, ToggleButton, Toolbar, Grabber, Icon, InputDecorator,
-	Input, Picker, PickerDecorator, Menu, MenuDecorator, MenuItem,
-	ProgressBar, Spinner
-].every(function (k) { return typeof k === 'function'; }));
+// NOT `typeof k === 'function'`. That cannot fail: a module with no default
+// export is a link-time SyntaxError, so this page would never run at all and
+// no check would report. (Verified: removing Spinner's `export default` leaves
+// the page stuck on "running…" with a console SyntaxError — which is what the
+// watchdog below is for.) What can fail is the export carrying the wrong
+// value, so each binding is checked to be the constructor it should be.
+const expectedKinds = [
+	[Button, 'onyx.Button'], [Checkbox, 'onyx.Checkbox'],
+	[ToggleButton, 'onyx.ToggleButton'], [Toolbar, 'onyx.Toolbar'],
+	[Grabber, 'onyx.Grabber'], [Icon, 'onyx.Icon'],
+	[InputDecorator, 'onyx.InputDecorator'], [Input, 'onyx.Input'],
+	[Picker, 'onyx.Picker'], [PickerDecorator, 'onyx.PickerDecorator'],
+	[Menu, 'onyx.Menu'], [MenuDecorator, 'onyx.MenuDecorator'],
+	[MenuItem, 'onyx.MenuItem'], [ProgressBar, 'onyx.ProgressBar'],
+	[Spinner, 'onyx.Spinner']
+];
+const wrongKinds = expectedKinds.filter(function (pair) {
+	return typeof pair[0] !== 'function' ||
+		!pair[0].prototype ||
+		pair[0].prototype.kindName !== pair[1];
+}).map(function (pair) { return pair[1]; });
+check('each default export is its kind constructor', wrongKinds.length === 0,
+	wrongKinds.length ? 'wrong: ' + wrongKinds.join(', ') : expectedKinds.length + ' kinds');
 
 // index.js runs dom.addBodyClass('onyx') as a side effect. Every onyx
 // stylesheet is written as `.onyx .onyx-button`-style descendant rules off

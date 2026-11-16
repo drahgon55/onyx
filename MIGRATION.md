@@ -178,9 +178,19 @@ shared leaf was split out, and **no dynamic `import()` was introduced anywhere**
 There were also no runtime (nested) `require()` calls — all 184 were at module
 top level — so nothing needed hoisting.
 
-`test-onyx/all-modules.html` imports each module separately, so a cycle
-introduced later surfaces there as a TDZ `ReferenceError` rather than as a
-mysterious `undefined` at runtime.
+Confirmed statically over the converted ESM source by
+`test-onyx/check-cycles.mjs` (a Tarjan pass, exits non-zero on a cycle):
+
+```
+45 modules, 84 static imports
+no circular imports
+```
+
+**Trust that, not the browser, for cycles.** Whether a cycle *throws* depends
+on which module you enter the graph from, so a browser check can pass on a tree
+that genuinely has one. The graph either has a cycle or it does not.
+`test-onyx/all-modules.html` still helps — it loads each module cold, in its own
+document — but it is a backstop, not the authority.
 
 ## Export shapes
 
@@ -342,8 +352,10 @@ holding both checkouts; console clean — no errors, no warnings, every request
   reaches the DOM. Styling is asserted separately from presence: the body
   carries the `onyx` class, `.onyx-button` computes to `font-size: 16px`, and
   its `background-image` is the `gradient.png` from `images/`.
-- `test-onyx/all-modules.html` — 37/37 modules import and evaluate cleanly on
-  their own, 7 listed as blocked.
+- `test-onyx/all-modules.html` — 37/37 modules load **cold**, each in its own
+  document, 7 listed as blocked.
+- `node test-onyx/check-cycles.mjs` — 45 modules, 84 static imports, no
+  circular imports. This is the authority on cycles; the browser is not.
 
 Both were re-run on `serve.py` after the caching problem above came to light,
 so the numbers are from genuinely fresh loads.
@@ -356,18 +368,45 @@ these was broken on purpose and the harness confirmed to catch it:
 | Break | Result |
 | --- | --- |
 | Strip `import '../index.js'` from all 44 modules | `FAIL (2)` — body class, and the `.onyx` font rules |
-| Make `Button` and `Icon` import each other | `FAIL (11)` in all-modules — `ReferenceError: Cannot access 'Button' before initialization` |
+| Order-dependent `Tooltip` ↔ `TooltipDecorator` cycle | `check-cycles.mjs` exits 1; all-modules `FAIL (1)` — `Cannot access 'Tooltip' before initialization` |
 | Revert the enyo `Scrim` fix | `FAIL (2)` — Menu `onSelect` never arrives |
 | Empty `css/onyx.css` | `FAIL (3)` — font-size, background image, font family |
+| Export `kind` instead of the kind from `Spinner.js` | `FAIL` — "each default export is its kind constructor — wrong: onyx.Spinner" |
+| Remove `Spinner.js`'s `export default` entirely | `FAIL (load)` — the watchdog reports the link error |
 
-The first of those **found a real hole**. The page originally did
-`import {version} from 'onyx/index.js'` at the top, which ran
-`dom.addBodyClass('onyx')` itself — so the body-class check passed even with
-every `import '../index.js'` stripped from `src/`. It could not fail. The page
-now imports `index.js` only via `await import()` at the very end, after that
-check has been made, so the class can only be present because a *widget* module
-pulled it in. That was the single most important thing to get right in this
-conversion, and until this it was untested.
+**Three of the checks turned out to be unfalsifiable, and breaking things on
+purpose is the only reason any of them were found.** All three are the same
+bug: an assertion whose outcome the test setup already guaranteed.
+
+1. **The body-class check could not fail.** The page did
+   `import {version} from 'onyx/index.js'` at the top, which runs
+   `dom.addBodyClass('onyx')` itself — so it passed even with every
+   `import '../index.js'` stripped from `src/`. The page now imports
+   `index.js` only via `await import()` at the very end, after the check. That
+   was the single most important thing this conversion had to get right.
+
+2. **The cycle canary could not fail reliably.** `all-modules.html` used to
+   import every module into one page, which shares the module registry: after
+   the first import most of the graph is already evaluated, so a
+   circular-import error can no longer occur. It reported `ALL 37 OK` for a
+   tree containing a real `Tooltip` ↔ `TooltipDecorator` cycle. (An earlier
+   `Button` ↔ `Icon` test *did* go red — but only because `Button` happens to
+   be first in the list, so it loaded cold. That was luck.) Each module is now
+   loaded in its own document via `load-one.html` in an iframe, and the
+   authority for cycles is the static `check-cycles.mjs`.
+
+3. **`typeof k === 'function'` over the imported kinds could not fail.** A
+   module with no default export is a *link-time* `SyntaxError`, so the page
+   never runs and no check reports at all — it sat silently on "running…" with
+   an un-alarming title. Replaced with a check that each binding is the
+   constructor it should be (`prototype.kindName === 'onyx.Button'`, …), which
+   catches an export carrying the wrong value. A plain classic `<script>` now
+   also watches for load errors and for the checks never finishing, so a
+   link failure shows as `FAIL (load)` instead of silence.
+
+`all-modules.html` likewise now treats a missing default export as a failure
+rather than a footnote, since every module under `src/` is a widget that must
+export its kind.
 
 The widgets were also looked at, not just asserted: the dark toolbar, the
 gradient buttons with the green `onyx-affirmative` and red `onyx-negative`

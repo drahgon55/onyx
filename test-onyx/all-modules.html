@@ -9,29 +9,33 @@
  .ok { color: #137333; } .bad { color: #c5221f; font-weight: bold; }
  .skip { color: #8a6d00; }
  #summary { font: 600 16px/1.5 system-ui, sans-serif; margin: 1rem 0; }
+ iframe { display: none; }
+ .note { background: #fffbe6; border-left: 3px solid #e0b000; padding: .5rem .75rem; }
 </style>
-
-<!-- Both package prefixes. Served from the directory holding enyo/ and onyx/. -->
-<script type="importmap">
-{
-	"imports": {
-		"enyo/": "/enyo/",
-		"onyx/": "/onyx/"
-	}
-}
-</script>
 </head>
 <body>
-<h1>Every module under <code>src/</code></h1>
-<p>Each module is imported on its own, so that nothing is hidden by another
-module having already pulled it in. Failures here are usually circular-import
-TDZ errors, or top-level code that assumed a bundler shim.</p>
+<h1>Every module under <code>src/</code>, loaded cold</h1>
+<p>Each module is loaded in <strong>a document of its own</strong>, via an iframe
+around <a href="load-one.html">load-one.html</a>, so that it and its subgraph
+evaluate with an empty module registry.</p>
+
+<p class="note">This used to import every module into this one page. That shares
+the module registry, so after the first import most of the graph was already
+evaluated and a circular-import error could no longer happen. It reported
+<code>ALL 37 OK</code> for a tree with a genuine
+<code>Tooltip</code>&nbsp;&harr;&nbsp;<code>TooltipDecorator</code> cycle in it.
+Whether a cycle throws at all depends on which module you enter from, so no
+browser check is reliable for cycles — run
+<code>node test-onyx/check-cycles.mjs</code>, which decides it statically. This
+page catches the rest: top-level code that assumes a bundler shim, a bad
+specifier, a module that throws on evaluation.</p>
+
 <div id="summary">running…</div>
 <div id="out"></div>
 
 <h2>Blocked on unconverted packages</h2>
 <p>These import <code>layout</code> or <code>enyo-ilib</code>, which are separate
-repositories, still CommonJS, and not checked out. Listed rather than imported,
+repositories, still CommonJS, and not checked out. Listed rather than loaded,
 so that an expected resolution failure never masks a real one.</p>
 <div id="blockedOut"></div>
 
@@ -39,17 +43,45 @@ so that an expected resolution failure never masks a real one.</p>
 import {modules, blocked} from './modules.js';
 
 const out = document.getElementById('out');
+const summary = document.getElementById('summary');
 const failures = [];
 
-for (const m of modules) {
+function loadCold (spec) {
+	return new Promise(function (resolve) {
+		const frame = document.createElement('iframe');
+		const done = function (result) {
+			window.removeEventListener('message', onMessage);
+			clearTimeout(timer);
+			frame.remove();
+			resolve(result);
+		};
+		const onMessage = function (e) {
+			if (e.source === frame.contentWindow && e.data && e.data.spec === spec) done(e.data);
+		};
+		const timer = setTimeout(function () {
+			done({spec: spec, ok: false, error: 'timed out'});
+		}, 15000);
+		window.addEventListener('message', onMessage);
+		frame.src = 'load-one.html?m=' + encodeURIComponent(spec);
+		document.body.appendChild(frame);
+	});
+}
+
+for (let i = 0; i < modules.length; i++) {
+	const m = modules[i];
+	summary.textContent = 'loading ' + (i + 1) + ' of ' + modules.length + '…';
+	const r = await loadCold(m);
 	let line;
-	try {
-		const ns = await import(m);
-		const hasDefault = Object.prototype.hasOwnProperty.call(ns, 'default');
-		line = '<div class="ok">ok    ' + m + (hasDefault ? '' : '   (no default export)') + '</div>';
-	} catch (e) {
-		failures.push([m, String(e)]);
-		line = '<div class="bad">FAIL  ' + m + '   ' + String(e).replace(/</g, '&lt;') + '</div>';
+	// Every module under src/ is a widget and must default-export its kind, so
+	// a missing default is a failure here, not a footnote.
+	if (r.ok && !r.hasDefault) {
+		failures.push([m, 'no default export']);
+		line = '<div class="bad">FAIL  ' + m + '   no default export</div>';
+	} else if (r.ok) {
+		line = '<div class="ok">ok    ' + m + '</div>';
+	} else {
+		failures.push([m, r.error]);
+		line = '<div class="bad">FAIL  ' + m + '   ' + String(r.error).replace(/</g, '&lt;') + '</div>';
 	}
 	out.insertAdjacentHTML('beforeend', line);
 }
@@ -58,8 +90,8 @@ document.getElementById('blockedOut').innerHTML = blocked.map(function (b) {
 	return '<div class="skip">skip  ' + b.path + '   needs ' + b.missing.join(', ') + '</div>';
 }).join('');
 
-document.getElementById('summary').textContent =
-	modules.length + ' modules imported, ' + failures.length + ' failed; ' +
+summary.textContent =
+	modules.length + ' modules loaded cold, ' + failures.length + ' failed; ' +
 	blocked.length + ' skipped (unconverted packages)';
 document.title = failures.length ? 'FAIL (' + failures.length + ')' : 'ALL ' + modules.length + ' OK';
 window.onyxEsmModuleTest = {total: modules.length, failures: failures, blocked: blocked.length};

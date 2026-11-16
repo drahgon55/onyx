@@ -1,0 +1,40 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>load one</title>
+<!--
+	Loads exactly one module, in a document of its own, and reports the result
+	to the parent. all-modules.html drives this in an iframe once per module.
+
+	The point is the fresh module registry. Importing every module into ONE
+	page shares the registry, so after the first import most of the graph is
+	already evaluated and a circular-import error can no longer occur -- the
+	page reports a clean pass for a graph that genuinely breaks on a cold load.
+	That is not theoretical: an order-dependent Tooltip <-> TooltipDecorator
+	cycle was reported as "ALL 37 OK" by the shared-registry version.
+
+	The import map has to be repeated here, because onyx's modules import
+	enyo/* as bare specifiers and this is a separate document.
+-->
+<script type="importmap">
+{
+	"imports": {
+		"enyo/": "/enyo/",
+		"onyx/": "/onyx/"
+	}
+}
+</script>
+<script type="module">
+const spec = new URLSearchParams(location.search).get('m');
+let result;
+try {
+	const ns = await import(spec);
+	result = {
+		spec: spec,
+		ok: true,
+		hasDefault: Object.prototype.hasOwnProperty.call(ns, 'default')
+	};
+} catch (e) {
+	result = {spec: spec, ok: false, error: String(e && e.message || e)};
+}
+parent.postMessage(result, '*');
+</script>
