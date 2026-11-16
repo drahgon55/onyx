@@ -332,6 +332,23 @@ ready(async function () {
 
 	// --- a published property drives the DOM ---
 	d.$.pb.set('progress', 75);
+	// hasNode() is not visibility. An onyx widget inside a reflowed layout row
+	// collapses to a zero-height box while still being present, matching its
+	// stylesheet and throwing nothing (see MIGRATION.md). So every widget that
+	// should be on screen is checked to occupy a real box.
+	const collapsed = [
+		['Button', d.$.btn], ['Checkbox', d.$.cb], ['ToggleButton', d.$.tb],
+		['Toolbar', d.$.toolbar || d.$.btn], ['ProgressBar', d.$.pb],
+		['Icon', d.$.icon || d.$.btn]
+	].filter(function (pair) {
+		const n = pair[1] && pair[1].hasNode();
+		if (!n) return true;
+		const r = n.getBoundingClientRect();
+		return r.width === 0 || r.height === 0;
+	}).map(function (pair) { return pair[0]; });
+	check('every visible widget occupies a non-zero box', collapsed.length === 0,
+		collapsed.length ? 'collapsed: ' + collapsed.join(', ') : 'all boxed');
+
 	check('ProgressBar reflects progress',
 		d.$.pb.$.bar.hasNode().style.width === '75%',
 		'width=' + d.$.pb.$.bar.hasNode().style.width);

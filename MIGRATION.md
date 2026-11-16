@@ -383,6 +383,59 @@ sources are unmodified here. An application supplies the one rule:
 
 `test-onyx/index.html` carries it, marked as belonging to the application.
 
+**A fixed-height onyx widget collapses inside a reflowed layout row.** An
+`onyx/Checkbox` placed in a `layout/FittableColumns` renders 32×0 and is
+invisible — the node is there, `hasNode()` is truthy, and nothing throws.
+
+The cause, confirmed in a browser rather than inferred:
+
+```
+layout/src/FittableLayout/FittableLayout.js:187
+	this.container.addRemoveClass('enyo-stretch', !this.container.noStretch);
+
+layout.css   .enyo-fittable-columns-layout.enyo-stretch > *  { height: 100% }
+onyx.css     .onyx-checkbox                                  { height: 32px }
+```
+
+`_reflow` adds `enyo-stretch` unconditionally, the descendant rule then matches
+the widget at (0,2,0) against the widget's own (0,1,0), and `height: 100%`
+against a row whose height is `auto` resolves to content height — which for an
+empty div drawn entirely from a background image is zero.
+
+**It is conditional on layout state, not on the two stylesheets sharing a
+page.** It fires only once that row has actually reflowed, which happens when
+it is nested inside another fittable whose reflow cascades into it. Measured
+both ways:
+
+| row | `enyo-stretch` | selector matches | checkbox |
+| --- | --- | --- | --- |
+| nested in a `FittableRows` | yes | yes | 32×0, computed `0px` |
+| rendered as a root | no | no | 32×32, computed `32px` |
+
+Setting `noStretch: true` on the row fixes it — the class is never added, the
+selector stops matching, and the checkbox returns to 32×32.
+
+Upstream behaviour, present in the bundled builds too, and nothing to do with
+this conversion: no `.less` or `.css` source is modified on this branch. It is
+recorded here because it is invisible rather than loud, and because
+`hasNode()` is not visibility — a harness can assert a widget rendered, and
+match its stylesheet, while the user sees nothing.
+
+`test-onyx/index.html` now asserts that every widget which should be on screen
+occupies a non-zero box, which is that lesson turned into a check. **Its limits
+are worth stating, because two attempts to break it failed first.** Setting
+`height: 0` on `.onyx-button` did not trip it: `getBoundingClientRect()`
+includes padding and border, and the button has both, so the box stayed 36px
+tall. Adding `padding: 0` to the top of the same rule did not trip it either —
+the original `padding` declaration later in the same block simply won. Only an
+appended `!important` override produced a genuinely zero box, which the check
+then caught (`collapsed: Button`, 40×0).
+
+So it catches a *fully* collapsed widget, which is the failure mode here — the
+checkbox is an empty div drawn from a background image, with no padding to hold
+it open. It does not catch a widget that is merely the wrong size, or one that
+has lost its content while keeping its frame. It is a floor, not a guarantee.
+
 **`.jshintrc` and the gulp lint task are stale**, exactly as in enyo. jshint
 cannot parse `import`/`export`, so `gulp` over `src/` now fails outright. Moving
 to a linter that understands ESM is a separate decision.
