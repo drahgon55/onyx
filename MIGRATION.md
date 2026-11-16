@@ -422,6 +422,24 @@ bug: an assertion whose outcome the test setup already guaranteed.
 rather than a footnote, since every module under `src/` is a widget that must
 export its kind.
 
+### Two lessons, if you are writing checks for the other packages
+
+**Ask of every check: what here is already guaranteed by the page running at
+all?** All three failures above are that one shape — an assertion whose outcome
+the test setup itself supplied. Its own import, its own warm module registry,
+its own successful link. (The same lens found a fourth in enyo's harness, a
+`typeof LocalStorageSource !== 'undefined'`.) Part of why they survive review is
+that each one *passed*, and a passing check gets read less carefully than a
+failing one. Breaking things on purpose is the only reason any of them turned
+up.
+
+**Assert the observed effect, not the absence of an exception.** When enyo's
+`this.inherited` support is disabled, nothing throws — a level of the
+super-chain is silently skipped. The check catches it only because it compares a
+trace (`mine,deeper`) rather than checking that no error was raised. A
+"did not throw" assertion would have passed while an application quietly lost
+half its `create()` calls.
+
 The widgets were also looked at, not just asserted: the dark toolbar, the
 gradient buttons with the green `onyx-affirmative` and red `onyx-negative`
 presets, the checkbox, the ON/OFF toggle, the striped progress bar, and a
