@@ -102,7 +102,7 @@ throws a TypeError and took `SliderSample` down on load. It now waterfalls
 `{content: content}` and the label handler reads `event.content`. The public
 API is unchanged.
 
-## One bug this turned up that is *not* fixed: `enyo-ilib`
+## And one in `enyo-ilib`, fixed there
 
 `DateFactory(options)` returns `undefined` whenever it is called without an
 explicit `type` or `calendar` — which is the ordinary case. In
@@ -124,21 +124,32 @@ the factory returns nothing. In the old sloppy-mode build `this` was the global
 object, so it worked. Same shape as the RangeSlider bug above: strict mode
 turning a silent no-op into a visible failure.
 
-What it costs here:
+Before it was fixed, `TimePickerSample` did not load at all —
+`onyx/src/i18n/TimePicker.js` calls `dateFactory({hour: 1})` while setting up
+meridiems, during `create()` — and `DatePickerSample` loaded with a working
+locale picker but threw on **Get Dates**, because formatting a JavaScript
+`Date` goes through the same path.
 
-- **`TimePickerSample` does not load at all.** `onyx/src/i18n/TimePicker.js`
-  calls `dateFactory({hour: 1})` while setting up meridiems, during `create()`.
-- **`DatePickerSample` loads and its locale picker works** — switching to
-  `ja-JP` really does re-order the pickers to year/month/day — but **"Get
-  Dates" throws**, because formatting a JavaScript `Date` goes through the same
-  path.
+Neither callback uses `this`, so the fix was to drop the `ilib.bind` wrapper.
+That is done on the `esm` branch of the `enyo-ilib` fork, where
+`MIGRATION.md` carries the detail — including why the other 96 uses of
+`ilib.bind(this, ...)` in that library are fine (they are in constructors and
+methods, where `this` is a real object under strict mode too; only a bare call
+loses it, and `DateFactory` and `CalendarFactory` were the only bare ones).
 
-The callback does not use `this` at all, so dropping the `ilib.bind` wrapper
-fixes it, and I verified that: with that one line changed, TimePickerSample
-renders completely (12-hour, 24-hour and disabled pickers) and DatePicker's
-readouts format correctly in every locale. It is left unfixed here because the
-file belongs to the `enyo-ilib` fork and is vendored iLib source rather than
-enyo's own, which is a call worth making deliberately rather than in passing.
+**So these two samples need an `enyo-ilib` checkout at that commit or later.**
+An older one will show the `getCalendar` error.
 
-Everything else works. Every one of the other 20 samples loads with no console
-errors.
+## Verified
+
+All 22 samples load with no console errors, checked in a browser one at a
+time. The two ilib samples were checked past loading as well: the locale
+picker re-orders the date pickers (`Nov 17 2026` in `en-US`, `2026 11 17` in
+`ja-JP`) and the readouts format to match — `11/17/26`, `26/11/17`,
+`17.11.26` in `de-DE` — and TimePicker renders its 12-hour, 24-hour and
+disabled pickers and formats `10:39pm` against `22:39`.
+
+The only failing network requests on any sample page are iLib probing for an
+app-level `resources/` directory that does not exist here; each falls back to
+`enyo-ilib/ilib/locale/` and returns 200. That is iLib working as designed,
+not a fault in the samples.
