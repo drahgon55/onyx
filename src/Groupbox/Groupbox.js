@@ -6,6 +6,7 @@ import '../../index.js';
 */
 
 import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * {@link module:onyx/Groupbox~Groupbox} displays rows of controls as a vertically-stacked group.
@@ -49,6 +50,11 @@ export default kind(
 	* @private
 	*/
 	name: 'onyx.Groupbox',
+
+	/**
+	* @private
+	*/
+	kind: Control,
 
 	/**
 	* @private

@@ -49,8 +49,8 @@ var RangeSliderKnobLabel = kind(
 	*
 	* @private
 	*/
-	setLabel: function (sender, content) {
-		this.setContent(content);
+	setLabel: function (sender, event) {
+		this.setContent(event.content);
 	}
 });
 
@@ -506,7 +506,7 @@ var RangeSlider = kind(
 	* @public
 	*/
 	setStartLabel: function (content) {
-		this.$.startKnob.waterfallDown('onSetLabel', content);
+		this.$.startKnob.waterfallDown('onSetLabel', {content: content});
 	},
 
 	/**
@@ -517,7 +517,7 @@ var RangeSlider = kind(
 	* @public
 	*/
 	setEndLabel: function (content) {
-		this.$.endKnob.waterfallDown('onSetLabel', content);
+		this.$.endKnob.waterfallDown('onSetLabel', {content: content});
 	}
 });
 

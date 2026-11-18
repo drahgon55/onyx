@@ -6,6 +6,7 @@ import '../../index.js';
 */
 
 import kind from 'enyo/src/kind.js';
+import Control from 'enyo/src/Control/Control.js';
 
 /**
 * {@link module:onyx/GroupboxHeader~GroupboxHeader} is a control designed to be placed inside an
@@ -36,6 +37,11 @@ export default kind(
 	* @private
 	*/
 	name: 'onyx.GroupboxHeader',
+
+	/**
+	* @private
+	*/
+	kind: Control,
 
 	/**
 	* @private
