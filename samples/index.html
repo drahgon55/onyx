@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onyx Samples</title>
+
+<style>
+ :root {
+   --bg: #fff; --fg: #1a1a1a; --muted: #5f6368; --line: #e0e0e0;
+   --accent: #F49200; --link: #1879CD; --card: #fafafa;
+ }
+ @media (prefers-color-scheme: dark) {
+   :root:not([data-theme="light"]) {
+     --bg: #17181a; --fg: #e8eaed; --muted: #9aa0a6; --line: #303134;
+     --accent: #F49200; --link: #6cb6f5; --card: #202124;
+   }
+ }
+ * { box-sizing: border-box; }
+ body {
+   margin: 0; padding: 2rem 1rem 4rem;
+   background: var(--bg); color: var(--fg);
+   font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+ }
+ .wrap { max-width: 60rem; margin: 0 auto; }
+ h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+ .sub { color: var(--muted); margin: 0 0 2rem; font-size: .95rem; }
+ .sub code { font-size: .85em; background: var(--card); padding: .1em .35em; border-radius: 3px; }
+ .grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+ a.card {
+   display: block; padding: .9rem 1rem; text-decoration: none; color: inherit;
+   background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+ }
+ a.card:hover { border-color: var(--accent); }
+ a.card .name {
+   display: block; font-weight: 600; color: var(--link);
+   text-transform: uppercase; font-size: .8rem; letter-spacing: .04em;
+ }
+ a.card .blurb { display: block; color: var(--muted); font-size: .88rem; margin-top: .3rem; }
+ .note {
+   margin-top: 2.5rem; padding: .9rem 1rem; border-left: 3px solid var(--accent);
+   background: var(--card); color: var(--muted); font-size: .9rem; border-radius: 0 6px 6px 0;
+ }
+ .note strong { color: var(--fg); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Onyx samples</h1>
+<p class="sub">
+  Upstream's own samples from <code>enyojs/onyx</code> at tag
+  <code>2.5.1-release</code>, ported to ES modules. Each one opens on its own
+  page; use your browser's Back button to come back here.
+</p>
+
+<div class="grid" id="grid"></div>
+
+<p class="note" id="note">
+  <strong>Not loading?</strong> These pages resolve bare specifiers through an
+  import map, so the <code>enyo</code>, <code>layout</code>, <code>onyx</code>
+  and <code>enyo-ilib</code> checkouts have to sit side by side under the
+  served root. Serve their common parent with
+  <code>layout/test-layout/serve.py</code>, not <code>python3 -m
+  http.server</code>.
+</p>
+
+</div>
+
+<script type="module">
+import samples from './samples.js';
+
+document.getElementById('grid').innerHTML = samples.map(s =>
+	'<a class="card" href="sample.html?s=' + encodeURIComponent(s.name) + '">' +
+		'<span class="name">' + s.label + '</span>' +
+		'<span class="blurb">' + s.blurb + '</span>' +
+	'</a>'
+).join('');
+</script>
+</body>
+</html>
