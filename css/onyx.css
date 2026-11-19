@@ -871,6 +871,82 @@
 .onyx-input-decorator.onyx-disabled > .onyx-richtext {
   cursor: default;
 }
+/* src/SectionList/SectionList.less */
+/* SectionList.css */
+/* A SectionList is a stack of groupboxes, and the look of one is the
+   groupbox's: the frame, the rule between rows, the rounded ends, the header's
+   type and the selected colour are all onyx's own, and an application restyles
+   this list exactly as it would restyle a groupbox. What is here is only what
+   folding and full bleed need -- nothing that changes how onyx looks. */
+/* The header has three or four things in a row now (a caret, the label, a
+   count, maybe an accessory) rather than a line of text, which is the one
+   arrangement a GroupboxHeader cannot already do. Padding and type are
+   untouched. */
+.onyx-section-list-header {
+  display: flex;
+  align-items: center;
+}
+.onyx-section-list-tappable {
+  cursor: pointer;
+}
+.onyx-section-list-caret {
+  flex: none;
+  width: 1em;
+  /* both marks occupy the same space */
+  margin-right: 0.35em;
+}
+.onyx-section-list-label {
+  flex: 1;
+  /* takes the slack, so an accessory stays right */
+}
+.onyx-section-list-count,
+.onyx-section-list-accessory {
+  flex: none;
+  margin-left: 0.5em;
+  font-weight: normal;
+  /* the header is bold; these are not the title */
+}
+/* Stacked groupboxes need something between them or the frames touch and read
+   as one box with a header in the middle. onyx's own Groupbox sample puts a
+   `<br>` between them; this is roughly that, in the one place it can be
+   undone. A literal rather than a variable because onyx has no variable for
+   it -- there was nothing to space before -- and adding one would mean editing
+   a file this kind has no other reason to touch. */
+.onyx-section-list-section + .onyx-section-list-section {
+  margin-top: 8px;
+}
+/* Folded, a section is nothing but its header, so it takes both pairs of
+   corners. onyx's rule for a groupbox's first child gives it the top pair
+   only, and it cannot know the rest of the box is hidden. */
+.onyx-section-list-section.onyx-collapsed > .onyx-section-list-header {
+  border-radius: 4px;
+}
+/* The last row still showing. onyx rounds the last child, which is structural
+   and so stays on a row the filter hid; `refreshSection` moves this one. */
+.onyx-section-list-section > .onyx-section-list-last {
+  border-radius: 0 0 4px 4px;
+}
+/* `flat`: edge to edge, so a column of sections reads as one list. onyx names
+   its first and last children explicitly -- that is where the rounding and the
+   top border live -- so this has to name them too, or those two keep a frame
+   nothing else has. */
+.onyx-section-list-flat .onyx-section-list-section + .onyx-section-list-section {
+  margin-top: 0;
+}
+.onyx-section-list-flat .onyx-section-list-section > *,
+.onyx-section-list-flat .onyx-section-list-section > *:first-child,
+.onyx-section-list-flat .onyx-section-list-section > *:last-child {
+  border-width: 0 0 1px;
+  border-radius: 0;
+}
+/* `stickyHeaders`: each header holds the top of the scroller while its own
+   section passes, then leaves with it -- the section is the sticky element's
+   containing block, which is what gets that for free. */
+.onyx-section-list-sticky .onyx-section-list-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
 /* src/Slider/Slider.less */
 /* Slider.css */
 .onyx-slider {

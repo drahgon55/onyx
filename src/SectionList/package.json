@@ -1,0 +1,6 @@
+{
+	"main": "SectionList.js",
+	"styles": [
+		"SectionList.less"
+	]
+}

@@ -29,6 +29,7 @@ export const modules = [
  "../src/RadioGroup/RadioGroup.js",
  "../src/RangeSlider/RangeSlider.js",
  "../src/RichText/RichText.js",
+ "../src/SectionList/SectionList.js",
  "../src/Slider/Slider.js",
  "../src/Spinner/Spinner.js",
  "../src/Submenu/Submenu.js",

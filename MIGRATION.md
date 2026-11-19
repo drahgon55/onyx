@@ -287,9 +287,49 @@ A page links it after enyo's:
 <link rel="stylesheet" href="/onyx/css/onyx.css">
 ```
 
+## One kind that is not upstream's
+
+Everything else in `src/` is upstream's 2.7.0, converted and otherwise left
+alone. `src/SectionList/` is not: it is a list of items divided into titled
+sections that fold away, and `enyojs/onyx` never had one.
+
+It is here rather than in an application because it is made of nothing but
+this library — each section is a `Groupbox` whose first child is a
+`GroupboxHeader`, with `Item`s after it — and because what is actually hard
+about it is knowing onyx:
+
+- An `Item` has no background of its own.
+- Giving it one beats `.enyo-selected`, which is a bare class selector in a
+  sheet that loads earlier. So does a `:hover` rule. The selection goes white
+  and only the highlight is left.
+- A groupbox's rounded ends come from `:first-child` and `:last-child`, which
+  are structural — so anything that *hides* rows, like a filter, strands the
+  rounding on a `display: none` row. `SectionList` moves a class instead.
+- The obvious fix for that, `overflow: hidden` on the box, silently kills a
+  sticky header: it makes the box the sticky container, and the box does not
+  scroll.
+- A `GroupboxHeader`'s gradient is pinned `0 10px`, which suits its 21px
+  default and leaves a band across the middle of anything taller. `0 bottom`
+  with `background-size: contain` is what `.onyx-toolbar` does with the same
+  image.
+
+None of that is hard once known, and all of it is invisible until it is on
+screen. That is the argument for the kind existing: every application that
+builds this out of groupboxes rediscovers the same five things.
+
+The kind adds no styling beyond what folding and full bleed need — the type,
+the frame, the rule between rows and the selected colour stay onyx's, so it is
+restyled exactly as a groupbox is. `SectionListSample` demonstrates it, and is
+the only sample here that is not a port.
+
+**If this fork is ever rebased onto a newer upstream, this is the one
+directory that will not be there to merge.** It is self-contained: `src/
+SectionList/` plus `samples/SectionListSample.js`, one line in
+`samples/samples.js`, and its block in `css/onyx.css`, which is generated.
+
 ## Still outstanding
 
-**Nothing is outstanding here any more.** All 44 modules under `src/` load and
+**Nothing is outstanding here any more.** All 45 modules under `src/` load and
 work. `enyo-ilib` was the last blocker and is converted
 (`drahgon55/enyo-ilib` branch `esm`), so the two locale-aware pickers under
 `src/i18n/` now resolve:

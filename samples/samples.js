@@ -22,6 +22,7 @@ export default [
 	{name: 'PickerSample', label: 'Picker', blurb: 'Pickers, IntegerPicker, and a 200-row FlyweightPicker.'},
 	{name: 'PopupSample', label: 'Popup', blurb: 'Centered, modal, scrimmed, at-event and stacked popups.'},
 	{name: 'ProgressSample', label: 'Progress', blurb: 'ProgressBars and ProgressButtons, animated and plain, driven from a value box.'},
+	{name: 'SectionListSample', label: 'Section List', blurb: 'Sections that fold away, with a filter, full-bleed and sticky headers. Not upstream\'s: this library\'s own kind.'},
 	{name: 'SliderSample', label: 'Slider', blurb: 'Sliders with increments, and a RangeSlider with labels.'},
 	{name: 'SpinnerSample', label: 'Spinner', blurb: 'The light and dark spinners.'},
 	{name: 'SubmenuSample', label: 'Submenu', blurb: 'Submenus, including submenus nested inside submenus.'},

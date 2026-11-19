@@ -1,10 +1,14 @@
 # onyx samples
 
-Upstream's own samples, ported to ES modules.
+Upstream's own samples, ported to ES modules, plus one of this fork's own.
 
 Onyx 2.7 deleted the `samples/` folder on the way out of 2.6, so these come
 from `enyojs/onyx` at tag `2.5.1-release`, the last tag that still had them.
 All 22 are here, along with upstream's shared `sample.css` and its `assets/`.
+
+`SectionListSample` is the twenty-third and is **not** a port: it demonstrates
+`onyx/SectionList`, a kind upstream never had. `MIGRATION.md` says why that
+one kind exists and what it is made of.
 
 ## Running them
 
@@ -142,8 +146,8 @@ An older one will show the `getCalendar` error.
 
 ## Verified
 
-All 22 samples load with no console errors, checked in a browser one at a
-time. The two ilib samples were checked past loading as well: the locale
+All 22 ported samples load with no console errors, checked in a browser one at
+a time, as does `SectionListSample`. The two ilib samples were checked past loading as well: the locale
 picker re-orders the date pickers (`Nov 17 2026` in `en-US`, `2026 11 17` in
 `ja-JP`) and the readouts format to match — `11/17/26`, `26/11/17`,
 `17.11.26` in `de-DE` — and TimePicker renders its 12-hour, 24-hour and
