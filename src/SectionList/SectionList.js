@@ -578,6 +578,19 @@ var SectionList = kind(
 	},
 
 	/**
+	* The control standing for one section's header -- what an application
+	* measures when it has to know how much of a row a sticky header is
+	* covering.
+	*
+	* @param {Number} sectionIndex - The section's position in `sections`.
+	* @returns {module:enyo/Control~Control} The header, or `null`.
+	* @public
+	*/
+	headerFor: function (sectionIndex) {
+		return this.built[sectionIndex] ? this.built[sectionIndex].header : null;
+	},
+
+	/**
 	* @returns {Object} The selected item's configuration object, or `null`.
 	* @public
 	*/
