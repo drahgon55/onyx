@@ -89,9 +89,11 @@ export default kind({
 			]},
 			{kind: Button, content: 'Collapse all', ontap: 'collapseAll'},
 			{kind: Button, content: 'Expand all', ontap: 'expandAll'},
-			{kind: ToggleButton, onContent: 'Flat', offContent: 'Boxed',
+			// Both toggles start on, because both are the kind's defaults; they
+			// are here to show the other setting.
+			{kind: ToggleButton, value: true, onContent: 'Flat', offContent: 'Boxed',
 				onChange: 'flatChanged'},
-			{kind: ToggleButton, onContent: 'Sticky', offContent: 'Loose',
+			{kind: ToggleButton, value: true, onContent: 'Sticky', offContent: 'Loose',
 				onChange: 'stickyChanged'}
 		]},
 

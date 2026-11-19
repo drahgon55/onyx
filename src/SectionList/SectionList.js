@@ -62,6 +62,10 @@ var CARET_SHUT = '▸';		// right
 * between rows and the selected colour are onyx's, so an application restyles
 * this list exactly as it would restyle a groupbox.
 *
+* It runs edge to edge by default, which is the one place it does not take a
+* groupbox as it finds it; set [flat]{@link module:onyx/SectionList~SectionList#flat}
+* to `false` for the boxed look.
+*
 * ```javascript
 * 	import kind from 'enyo/src/kind.js';
 * 	import Scroller from 'enyo/src/Scroller/Scroller.js';
@@ -158,24 +162,35 @@ var SectionList = kind(
 		* space between them, so a column of sections reads as one list rather
 		* than as stacked cards. The rule between rows stays.
 		*
+		* This is the default because a list is usually the whole of what it is
+		* in -- a panel, a drawer, a column -- and a card inside a box that is
+		* already the same shape is a frame drawn twice. Set it to `false` for
+		* onyx's boxed groupbox look, which is what you want when the sections
+		* sit in a page among other things.
+		*
 		* @type {Boolean}
-		* @default false
+		* @default true
 		* @public
 		*/
-		flat: false,
+		flat: true,
 
 		/**
 		* Holds each header at the top of the scroller while its own section is
-		* passing. Needs an enclosing scroller, and nothing between this list
-		* and that scroller may have `overflow` set to anything but `visible` --
-		* an `overflow: hidden` ancestor becomes the sticky container itself,
-		* and since it does not scroll, nothing ever sticks.
+		* passing, then lets it leave with its section.
+		*
+		* Two things it needs, and neither fails loudly. There has to be an
+		* enclosing scroller: with none, the headers stick to whatever does
+		* scroll, which is usually the page. And nothing between this list and
+		* that scroller may set `overflow` to anything but `visible` -- an
+		* `overflow: hidden` ancestor becomes the sticky container itself, and
+		* since it does not scroll, nothing ever sticks. Set this to `false`
+		* if either is awkward; a header that does not stick is the only cost.
 		*
 		* @type {Boolean}
-		* @default false
+		* @default true
 		* @public
 		*/
-		stickyHeaders: false,
+		stickyHeaders: true,
 
 		/**
 		* The mark on an open section's header.
